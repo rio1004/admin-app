@@ -35,6 +35,7 @@ export default function ItemForm({
     const [isDragging, setIsDragging] = useState(false);
     const form = useForm<{
         name: string;
+        description: string;
         category_id: string;
         link: string;
         image: File | null;
@@ -42,6 +43,7 @@ export default function ItemForm({
         _method: string;
     }>({
         name: item?.name ?? '',
+        description: item?.description ?? '',
         category_id: item ? String(item.category_id) : '',
         link: item?.link ?? '',
         image: null,
@@ -168,6 +170,47 @@ export default function ItemForm({
                                             <InputError
                                                 id="item-name-error"
                                                 message={form.errors.name}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="item-description">
+                                                {t('Description')}{' '}
+                                                <span className="font-normal text-muted-foreground">
+                                                    {t('(optional)')}
+                                                </span>
+                                            </Label>
+                                            <textarea
+                                                id="item-description"
+                                                rows={5}
+                                                maxLength={5000}
+                                                value={form.data.description}
+                                                disabled={form.processing}
+                                                onChange={(event) =>
+                                                    form.setData(
+                                                        'description',
+                                                        event.target.value,
+                                                    )
+                                                }
+                                                placeholder={t(
+                                                    'Describe this item',
+                                                )}
+                                                aria-invalid={
+                                                    !!form.errors.description
+                                                }
+                                                aria-describedby="item-description-help item-description-error"
+                                                className="block w-full resize-y rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
+                                            />
+                                            <p
+                                                id="item-description-help"
+                                                className="text-xs text-muted-foreground"
+                                            >
+                                                {t('Up to 5,000 characters.')}
+                                            </p>
+                                            <InputError
+                                                id="item-description-error"
+                                                message={
+                                                    form.errors.description
+                                                }
                                             />
                                         </div>
                                         <div className="space-y-2">

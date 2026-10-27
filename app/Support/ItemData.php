@@ -13,6 +13,7 @@ final class ItemData
     {
         return [
             'id' => $item->id, 'name' => $item->name, 'slug' => $item->slug,
+            'description' => $item->description,
             'category_id' => $item->category_id, 'category' => $item->category->only(['id', 'name']),
             'link' => $item->link, 'image_url' => $item->image ? Storage::disk('public')->url($item->image) : null,
             'can' => ['view' => $user->can('view', $item), 'update' => $user->can('update', $item), 'delete' => $user->can('delete', $item)],

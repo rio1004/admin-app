@@ -97,6 +97,7 @@ class ItemController extends Controller
         return $items->save($item, [
             'name' => $request->validated('name'), 'category_id' => (int) $request->validated('category_id'),
             'link' => $request->validated('link') ?? null,
+            'description' => $request->validated('description') ?? null,
         ], $upload instanceof UploadedFile ? $upload : null, $request->boolean('remove_image'));
     }
 

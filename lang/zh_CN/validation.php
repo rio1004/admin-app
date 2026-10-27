@@ -49,7 +49,7 @@ return [
         'name' => '名称', 'username' => '用户名', 'email' => '邮箱',
         'password' => '密码', 'password_confirmation' => '确认密码',
         'current_password' => '当前密码', 'category_id' => '分类',
-        'image' => '图片', 'remove_image' => '移除图片', 'link' => '链接',
+        'image' => '图片', 'remove_image' => '移除图片', 'link' => '链接', 'description' => '描述',
         'slug' => '唯一标识', 'roles' => '角色', 'roles.*' => '角色',
         'permissions' => '权限', 'permissions.*' => '权限',
         'search' => '搜索关键词', 'sort' => '排序字段', 'direction' => '排序顺序',

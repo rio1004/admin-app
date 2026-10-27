@@ -72,6 +72,36 @@ test('authorized item CRUD supports category reassignment stable slugs and nulla
     expect($item->fresh())->toBeNull();
 });
 
+test('item descriptions can be created displayed updated and cleared', function () {
+    $description = "First line\n<script>alert('plain text')</script>";
+    $this->actingAs($this->admin)->post('/admin/items', [...$this->data, 'description' => $description])->assertSessionHasNoErrors();
+    $item = Item::query()->sole();
+    expect($item->description)->toBe($description);
+    foreach (["/admin/items/$item->id", "/admin/items/$item->id/edit"] as $url) {
+        $this->get($url)->assertInertia(fn (Assert $page) => $page->where('item.description', $description));
+    }
+    $this->get('/admin/items')->assertInertia(fn (Assert $page) => $page->where('items.data.0.description', $description));
+    $this->put("/admin/items/$item->id", [...$this->data, 'description' => str_repeat('a', 5000)])->assertSessionHasNoErrors();
+    expect($item->fresh()->description)->toHaveLength(5000);
+    $this->put("/admin/items/$item->id", [...$this->data, 'description' => ''])->assertSessionHasNoErrors();
+    expect($item->fresh()->description)->toBeNull();
+});
+
+test('invalid descriptions cannot be created or saved', function (mixed $description) {
+    $item = Item::factory()->create(['description' => 'Keep this description']);
+    $this->actingAs($this->admin)->post('/admin/items', [...$this->data, 'description' => $description])->assertSessionHasErrors('description');
+    $this->put("/admin/items/$item->id", [...$this->data, 'description' => $description])->assertSessionHasErrors('description');
+    expect(Item::count())->toBe(1)->and($item->fresh()->description)->toBe('Keep this description');
+})->with([[['invalid']], [str_repeat('x', 5001)]]);
+
+test('users without item update access cannot change descriptions', function () {
+    $item = Item::factory()->create(['description' => 'Original description']);
+    $user = User::factory()->create();
+    $user->givePermissionTo(['admin.access', 'items.view']);
+    $this->actingAs($user)->put("/admin/items/$item->id", [...$this->data, 'description' => 'Unauthorized edit'])->assertForbidden();
+    expect($item->fresh()->description)->toBe('Original description');
+});
+
 test('item names and category selection are validated', function (array $change, string $error) {
     $this->actingAs($this->admin)->post('/admin/items', [...$this->data, ...$change])->assertSessionHasErrors($error);
     expect(Item::count())->toBe(0);
