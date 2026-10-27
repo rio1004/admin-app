@@ -26,6 +26,7 @@ class MakeAdmin extends Command
         }
         $user = User::query()->where('email', $email)->first();
         $name = null;
+        $username = null;
         $password = null;
         if (! $user) {
             if (! $this->option('create') || ! $this->input->isInteractive()) {
@@ -34,10 +35,12 @@ class MakeAdmin extends Command
                 return self::FAILURE;
             }
             $name = $this->ask('Name');
+            $username = strtolower(trim((string) $this->ask('Username (letters, numbers, underscores and hyphens)')));
             $password = $this->secret('Password (minimum 12 characters, mixed case, number and symbol)');
             $confirmation = $this->secret('Confirm password');
-            $validator = Validator::make(['name' => $name, 'password' => $password, 'password_confirmation' => $confirmation], [
+            $validator = Validator::make(['name' => $name, 'username' => $username, 'password' => $password, 'password_confirmation' => $confirmation], [
                 'name' => ['required', 'string', 'max:255'],
+                'username' => ['required', 'string', 'max:100', 'regex:/^[a-z0-9_-]+$/', 'unique:users,username'],
                 'password' => ['required', 'confirmed', Password::min(12)->mixedCase()->numbers()->symbols()],
             ]);
             if ($validator->fails()) {
@@ -49,13 +52,14 @@ class MakeAdmin extends Command
             }
         }
         (new RolesAndPermissionsSeeder)->run();
-        $lock->run(function () use ($user, $email, $name, $password) {
+        $lock->run(function () use ($user, $email, $name, $username, $password) {
             if (! $user) {
-                $user = User::query()->create(['name' => $name, 'email' => $email, 'password' => $password]);
+                $user = User::query()->create(['name' => $name, 'username' => $username, 'email' => $email, 'password' => $password]);
             }
             $user->assignRole(AdminPermissions::ADMIN_ROLE);
         });
-        $this->info("Admin access granted to $email. Existing credentials are unchanged.");
+        $user = User::query()->where('email', $email)->firstOrFail();
+        $this->info("Admin access granted to $email. Username: {$user->username}. Existing credentials are unchanged.");
 
         return self::SUCCESS;
     }

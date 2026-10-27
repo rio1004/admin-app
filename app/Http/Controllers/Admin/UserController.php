@@ -25,7 +25,7 @@ class UserController extends Controller
             'sort' => ['nullable', 'in:name,email,created_at'], 'direction' => ['nullable', 'in:asc,desc'],
             'page' => ['nullable', 'integer', 'min:1'],
         ]);
-        $users = User::query()->select(['id', 'name', 'email'])
+        $users = User::query()->select(['id', 'name', 'username', 'email'])
             ->with(['roles.permissions:id,name,guard_name', 'permissions:id,name,guard_name'])
             ->when(isset($filters['search']) && $filters['search'] !== '', fn ($query) => $query
                 ->where(fn ($query) => $query->where('name', 'like', '%'.$filters['search'].'%')->orWhere('email', 'like', '%'.$filters['search'].'%')))
@@ -69,7 +69,7 @@ class UserController extends Controller
     /** @return array<string, mixed> */
     private function payload(Request $request, User $user): array
     {
-        return ['id' => $user->id, 'name' => $user->name, 'email' => $user->email,
+        return ['id' => $user->id, 'name' => $user->name, 'username' => $user->username, 'email' => $user->email,
             'roles' => $user->roles->map(fn ($role) => $role->only(['id', 'name']))->values(),
             'is_self' => $request->user()->id === $user->id,
             'can' => ['update' => $request->user()->can('update', $user), 'delete' => $request->user()->can('delete', $user)]];
@@ -96,7 +96,7 @@ class UserController extends Controller
         $data = $request->validated();
         $roleIds = array_key_exists('roles', $data) ? array_values(array_map(intval(...), $data['roles'])) : null;
 
-        return $users->save($request->user(), $user, ['name' => $data['name'], 'email' => $data['email'], 'password' => $data['password'] ?? null], $roleIds);
+        return $users->save($request->user(), $user, ['name' => $data['name'], 'username' => $data['username'] ?? $user?->username, 'email' => $data['email'], 'password' => $data['password'] ?? null], $roleIds);
     }
 
     private function destination(Request $request, User $target): RedirectResponse

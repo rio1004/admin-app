@@ -19,7 +19,7 @@ beforeEach(function () {
     $this->seed(RolesAndPermissionsSeeder::class);
     $this->admin = User::factory()->create();
     $this->admin->assignRole('Admin');
-    $this->data = ['name' => 'New teammate', 'email' => 'teammate@example.com', 'password' => 'TestOnly!Password123', 'password_confirmation' => 'TestOnly!Password123'];
+    $this->data = ['name' => 'New teammate', 'username' => 'teammate', 'email' => 'teammate@example.com', 'password' => 'TestOnly!Password123', 'password_confirmation' => 'TestOnly!Password123'];
 });
 
 test('user CRUD endpoints require authentication and workspace access', function () {
@@ -245,7 +245,7 @@ test('password updates invalidate outstanding reset tokens and rotate remember t
 test('saved accounts can use the existing Fortify login behavior', function () {
     $this->actingAs($this->admin)->post('/admin/users', [...$this->data, 'roles' => [Role::findByName('Admin')->id]])->assertSessionHasNoErrors();
     $this->post(route('logout'));
-    $this->post(route('login.store'), ['email' => $this->data['email'], 'password' => $this->data['password']])->assertRedirect(route('dashboard', absolute: false));
+    $this->post(route('login.store'), ['username' => $this->data['username'], 'password' => $this->data['password']])->assertRedirect(route('dashboard', absolute: false));
     $this->assertAuthenticatedAs(User::where('email', $this->data['email'])->firstOrFail());
     $this->get(route('dashboard'))->assertOk();
 });

@@ -14,7 +14,7 @@ final class ManageUsers
     public function __construct(private AccessLock $lock, private ManageUserAccess $access) {}
 
     /**
-     * @param  array{name: string, email: string, password: string|null}  $data
+     * @param  array{name: string, username?: string|null, email: string, password: string|null}  $data
      * @param  list<int>|null  $roles  Null means preserve assignments; [] means clear.
      */
     public function save(User $actor, ?User $target, array $data, ?array $roles): User
@@ -29,6 +29,9 @@ final class ManageUsers
                 }
                 $target ??= new User;
                 $target->name = $data['name'];
+                if (isset($data['username'])) {
+                    $target->username = $data['username'];
+                }
                 if ($target->email !== $data['email']) {
                     if ($target->exists) {
                         DB::table('password_reset_tokens')->where('email', $target->email)->delete();
@@ -50,8 +53,9 @@ final class ManageUsers
 
                 return $target;
             });
-        } catch (UniqueConstraintViolationException) {
-            throw ValidationException::withMessages(['email' => 'The email has already been taken.']);
+        } catch (UniqueConstraintViolationException $exception) {
+            $field = str_contains($exception->getMessage(), 'username') ? 'username' : 'email';
+            throw ValidationException::withMessages([$field => 'The '.$field.' has already been taken.']);
         }
     }
 

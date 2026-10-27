@@ -36,3 +36,7 @@ User CRUD always blocks self-deletion. The existing profile self-deletion flow r
 - [Items and image lifecycle](items.md)
 - [Users and role-assignment protections](users.md)
 - [Setup, storage, verification, and limitations](setup.md)
+
+## Username login
+
+Run `php artisan migrate` and rebuild assets with `npm run build`. Login uses a unique username and password; email remains required for password resets. Existing usernames are generated from display names in ID order, using lowercase letters, numbers, and underscores. Empty names use `user`; collisions receive `_2`, `_3`, and so on. Usernames stay unchanged when display names change. Admin user forms allow setting usernames (up to 100 lowercase letters, numbers, underscores or hyphens). The `admin:make --create` flow also prompts for a username.

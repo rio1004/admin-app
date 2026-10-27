@@ -14,6 +14,9 @@ class UserRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        if (is_string($this->input('username'))) {
+            $this->merge(['username' => strtolower(trim($this->input('username')))]);
+        }
         if (is_string($this->input('email'))) {
             $this->merge(['email' => strtolower(trim($this->input('email')))]);
         }
@@ -38,6 +41,7 @@ class UserRequest extends FormRequest
 
         return [
             ...$this->profileRules($target instanceof User ? $target->id : null),
+            'username' => [$target instanceof User ? 'sometimes' : 'required', 'required', 'string', 'max:100', 'regex:/^[a-z0-9_-]+$/', Rule::unique('users', 'username')->ignore($target instanceof User ? $target->id : null)],
             'password' => $password,
             'roles' => $this->user()?->can('roles.update') ? ['sometimes', 'array', 'max:100'] : ['missing'],
             'roles.*' => ['integer', 'distinct', Rule::exists('roles', 'id')->where('guard_name', 'web')],

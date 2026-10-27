@@ -30,6 +30,7 @@ export default function UserForm({
 }: Props) {
     const form = useForm({
         name: user?.name ?? '',
+        username: user?.username ?? '',
         email: user?.email ?? '',
         password: '',
         password_confirmation: '',
@@ -107,6 +108,33 @@ export default function UserForm({
                                         <InputError
                                             id="user-name-error"
                                             message={form.errors.name}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="user-username">
+                                            Username
+                                        </Label>
+                                        <Input
+                                            id="user-username"
+                                            required
+                                            maxLength={100}
+                                            autoComplete="username"
+                                            value={form.data.username}
+                                            disabled={form.processing}
+                                            onChange={(event) =>
+                                                form.setData(
+                                                    'username',
+                                                    event.target.value,
+                                                )
+                                            }
+                                            aria-invalid={
+                                                !!form.errors.username
+                                            }
+                                            aria-describedby="user-username-error"
+                                        />
+                                        <InputError
+                                            id="user-username-error"
+                                            message={form.errors.username}
                                         />
                                     </div>
                                     <div className="space-y-2">

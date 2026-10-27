@@ -46,6 +46,7 @@ test('first admin setup does not silently create an account', function () {
 test('first admin setup creates an account only with explicit interactive credentials', function () {
     $this->artisan('admin:make', ['email' => 'first@example.com', '--create' => true])
         ->expectsQuestion('Name', 'First Admin')
+        ->expectsQuestion('Username (letters, numbers, underscores and hyphens)', 'first_admin')
         ->expectsQuestion('Password (minimum 12 characters, mixed case, number and symbol)', 'TestOnly!Password123')
         ->expectsQuestion('Confirm password', 'TestOnly!Password123')
         ->assertSuccessful();
@@ -57,6 +58,7 @@ test('first admin setup rejects invalid email and weak passwords', function () {
     $this->artisan('admin:make', ['email' => 'invalid'])->assertFailed();
     $this->artisan('admin:make', ['email' => 'weak@example.com', '--create' => true])
         ->expectsQuestion('Name', 'First Admin')
+        ->expectsQuestion('Username (letters, numbers, underscores and hyphens)', 'first_admin')
         ->expectsQuestion('Password (minimum 12 characters, mixed case, number and symbol)', 'weak')
         ->expectsQuestion('Confirm password', 'weak')
         ->assertFailed();
