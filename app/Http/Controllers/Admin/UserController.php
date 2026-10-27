@@ -22,13 +22,16 @@ class UserController extends Controller
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:255'],
             'role_id' => ['nullable', 'integer', Rule::exists('roles', 'id')->where('guard_name', 'web')],
-            'sort' => ['nullable', 'in:name,email,created_at'], 'direction' => ['nullable', 'in:asc,desc'],
+            'sort' => ['nullable', 'in:name,username,email,created_at'], 'direction' => ['nullable', 'in:asc,desc'],
             'page' => ['nullable', 'integer', 'min:1'],
         ]);
+        // Always serialize filters as an object, including on an unfiltered visit.
+        $filters['sort'] ??= 'name';
+        $filters['direction'] ??= 'asc';
         $users = User::query()->select(['id', 'name', 'username', 'email'])
             ->with(['roles.permissions:id,name,guard_name', 'permissions:id,name,guard_name'])
             ->when(isset($filters['search']) && $filters['search'] !== '', fn ($query) => $query
-                ->where(fn ($query) => $query->where('name', 'like', '%'.$filters['search'].'%')->orWhere('email', 'like', '%'.$filters['search'].'%')))
+                ->where(fn ($query) => $query->where('name', 'like', '%'.$filters['search'].'%')->orWhere('username', 'like', '%'.$filters['search'].'%')->orWhere('email', 'like', '%'.$filters['search'].'%')))
             ->when($filters['role_id'] ?? null, fn ($query, $id) => $query->whereHas('roles', fn ($query) => $query->where('roles.id', $id)->where('guard_name', 'web')))
             ->orderBy($filters['sort'] ?? 'name', $filters['direction'] ?? 'asc')->orderBy('id')
             ->paginate(10)->withQueryString();

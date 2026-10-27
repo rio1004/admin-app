@@ -49,7 +49,11 @@ export default function UsersIndex({
     const search = useForm({
         search: filters.search ?? '',
         role_id: filters.role_id ? String(filters.role_id) : '',
-        sort: filters.sort ?? 'name',
+        sort:
+            typeof filters.sort === 'string' &&
+            ['name', 'username', 'email', 'created_at'].includes(filters.sort)
+                ? filters.sort
+                : 'name',
         direction: filters.direction ?? 'asc',
     });
     const deletion = useForm({});
@@ -100,7 +104,7 @@ export default function UsersIndex({
                                         )
                                     }
                                     className="mt-2"
-                                    placeholder="Search name or email"
+                                    placeholder="Search name, username, or email"
                                 />
                                 <InputError message={search.errors.search} />
                             </div>
@@ -140,6 +144,7 @@ export default function UsersIndex({
                                     }
                                 >
                                     <option value="name">Name</option>
+                                    <option value="username">Username</option>
                                     <option value="email">Email</option>
                                     <option value="created_at">
                                         Created date
@@ -191,7 +196,7 @@ export default function UsersIndex({
                                 }
                                 description={
                                     filtered
-                                        ? 'Try another name, email, or role, or reset your filters.'
+                                        ? 'Try another name, username, email, or role, or reset your filters.'
                                         : 'Create an account to add someone to your workspace.'
                                 }
                             />
@@ -209,6 +214,12 @@ export default function UsersIndex({
                                                 className="p-3 font-medium"
                                             >
                                                 Name
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="p-3 font-medium"
+                                            >
+                                                Username
                                             </th>
                                             <th
                                                 scope="col"
@@ -247,6 +258,9 @@ export default function UsersIndex({
                                                             </Badge>
                                                         )}
                                                     </div>
+                                                </td>
+                                                <td className="p-3 break-all text-muted-foreground">
+                                                    {user.username}
                                                 </td>
                                                 <td className="p-3 break-all text-muted-foreground">
                                                     {user.email}

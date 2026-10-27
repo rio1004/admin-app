@@ -190,6 +190,29 @@ test('self demotion returns to an accessible page without altering login state',
     expect($this->admin->fresh()->hasRole('Admin'))->toBeFalse();
 });
 
+test('unfiltered user list supplies serializable sort defaults for searching', function () {
+    $this->actingAs($this->admin)->get('/admin/users')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('filters.sort', 'name')->where('filters.direction', 'asc'));
+    $this->get('/admin/users?search='.$this->admin->username.'&role_id=&sort=name&direction=asc')
+        ->assertSessionHasNoErrors()
+        ->assertInertia(fn (Assert $page) => $page->where('users.total', 1)
+            ->where('users.data.0.username', $this->admin->username));
+});
+
+test('usernames are searchable and sortable with pagination preserving filters', function () {
+    foreach (range(1, 12) as $number) {
+        User::factory()->create(['username' => sprintf('login_member_%02d', $number)]);
+    }
+    $this->actingAs($this->admin)->get('/admin/users?search=login_member_&sort=username&direction=desc')
+        ->assertSessionHasNoErrors()
+        ->assertInertia(fn (Assert $page) => $page->where('users.total', 12)
+            ->where('users.data.0.username', 'login_member_12')
+            ->where('users.next_page_url', fn ($url) => str_contains($url, 'search=login_member_') && str_contains($url, 'sort=username') && str_contains($url, 'direction=desc')));
+    $this->get('/admin/users?search=login_member_&sort=username&direction=asc&page=2')
+        ->assertInertia(fn (Assert $page) => $page->where('users.data.0.username', 'login_member_11')->has('users.data', 2));
+});
+
 test('user search role filtering and pagination preserve query parameters', function () {
     $role = Role::create(['name' => 'Team', 'guard_name' => 'web']);
     foreach (range(1, 12) as $i) {
