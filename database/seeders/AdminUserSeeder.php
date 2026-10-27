@@ -12,7 +12,9 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
+        abort_unless(app()->environment('local'), 403, 'The preview account seeder is local-only. Use admin:make for administrator setup.');
+
+        User::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin',

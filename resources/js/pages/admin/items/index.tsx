@@ -1,0 +1,394 @@
+import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Package, Plus } from 'lucide-react';
+import { useState } from 'react';
+import { EmptyState } from '@/components/admin/empty-state';
+import { ItemDeleteDialog } from '@/components/admin/item-delete-dialog';
+import { PageContainer } from '@/components/admin/page-container';
+import { PageHeading } from '@/components/admin/page-heading';
+import InputError from '@/components/input-error';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { create, edit, index, show } from '@/routes/admin/items';
+import type { CategoryOption, Item } from '@/types/item';
+
+type Props = {
+    items: {
+        data: Item[];
+        current_page: number;
+        last_page: number;
+        total: number;
+        prev_page_url: string | null;
+        next_page_url: string | null;
+    };
+    categories: CategoryOption[];
+    filters: {
+        search?: string;
+        category_id?: number | string;
+        sort?: string;
+        direction?: string;
+    };
+    canCreate: boolean;
+};
+
+export default function ItemsIndex({
+    items,
+    categories,
+    filters,
+    canCreate,
+}: Props) {
+    const search = useForm({
+        search: filters.search ?? '',
+        category_id: filters.category_id ? String(filters.category_id) : '',
+        sort: filters.sort ?? 'created_at',
+        direction: filters.direction ?? 'desc',
+    });
+    const [selected, setSelected] = useState<Item | null>(null);
+    const filtered = !!filters.search || !!filters.category_id;
+    return (
+        <>
+            <Head title="Items" />
+            <PageContainer>
+                <PageHeading
+                    title="Items"
+                    description="Your collection, thoughtfully organized. Find and manage your content in one place."
+                    actions={
+                        canCreate && (
+                            <Button asChild>
+                                <Link href={create()}>
+                                    <Plus aria-hidden="true" />
+                                    Create item
+                                </Link>
+                            </Button>
+                        )
+                    }
+                />
+                <Card className="min-w-0 shadow-none">
+                    <CardContent className="space-y-6">
+                        <form
+                            aria-busy={search.processing}
+                            onSubmit={(event) => {
+                                event.preventDefault();
+                                search.get(index.url(), {
+                                    preserveState: true,
+                                    preserveScroll: true,
+                                });
+                            }}
+                            className="flex flex-wrap items-end gap-3"
+                        >
+                            <div className="min-w-40 flex-1">
+                                <Label htmlFor="item-search">
+                                    Search items
+                                </Label>
+                                <Input
+                                    id="item-search"
+                                    value={search.data.search}
+                                    onChange={(event) =>
+                                        search.setData(
+                                            'search',
+                                            event.target.value,
+                                        )
+                                    }
+                                    className="mt-2"
+                                    placeholder="Search name or slug"
+                                />
+                                <InputError message={search.errors.search} />
+                            </div>
+                            <div className="max-w-full min-w-36">
+                                <Label htmlFor="item-category-filter">
+                                    Category
+                                </Label>
+                                <select
+                                    id="item-category-filter"
+                                    className="mt-2 block h-9 w-full rounded-md border bg-background px-3 text-sm"
+                                    value={search.data.category_id}
+                                    onChange={(event) =>
+                                        search.setData(
+                                            'category_id',
+                                            event.target.value,
+                                        )
+                                    }
+                                >
+                                    <option value="">All categories</option>
+                                    {categories.map((category) => (
+                                        <option
+                                            key={category.id}
+                                            value={category.id}
+                                        >
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <InputError
+                                    message={search.errors.category_id}
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="item-sort">Sort by</Label>
+                                <select
+                                    id="item-sort"
+                                    className="mt-2 block h-9 rounded-md border bg-background px-3 text-sm"
+                                    value={search.data.sort}
+                                    onChange={(event) =>
+                                        search.setData(
+                                            'sort',
+                                            event.target.value,
+                                        )
+                                    }
+                                >
+                                    <option value="created_at">
+                                        Created date
+                                    </option>
+                                    <option value="name">Name</option>
+                                    <option value="slug">Slug</option>
+                                </select>
+                                <InputError message={search.errors.sort} />
+                            </div>
+                            <div>
+                                <Label htmlFor="item-direction">Order</Label>
+                                <select
+                                    id="item-direction"
+                                    className="mt-2 block h-9 rounded-md border bg-background px-3 text-sm"
+                                    value={search.data.direction}
+                                    onChange={(event) =>
+                                        search.setData(
+                                            'direction',
+                                            event.target.value,
+                                        )
+                                    }
+                                >
+                                    <option value="desc">Descending</option>
+                                    <option value="asc">Ascending</option>
+                                </select>
+                                <InputError message={search.errors.direction} />
+                            </div>
+                            <Button
+                                type="submit"
+                                variant="outline"
+                                disabled={search.processing}
+                            >
+                                {search.processing ? 'Searching...' : 'Apply'}
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                disabled={search.processing}
+                                onClick={() => router.get(index.url())}
+                            >
+                                Reset
+                            </Button>
+                        </form>
+                        {items.data.length === 0 ? (
+                            <EmptyState
+                                icon={Package}
+                                title={
+                                    filtered
+                                        ? 'No matching items'
+                                        : 'Your collection starts here'
+                                }
+                                description={
+                                    filtered
+                                        ? 'Try another search or category, or reset your filters.'
+                                        : 'Add your first item with a category, an optional image, and a link.'
+                                }
+                                actions={
+                                    canCreate &&
+                                    !filtered && (
+                                        <Button asChild>
+                                            <Link href={create()}>
+                                                <Plus aria-hidden="true" />
+                                                Create item
+                                            </Link>
+                                        </Button>
+                                    )
+                                }
+                            />
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left text-sm">
+                                    <caption className="sr-only">
+                                        Items, categories and available actions
+                                    </caption>
+                                    <thead className="border-b text-muted-foreground">
+                                        <tr>
+                                            <th
+                                                scope="col"
+                                                className="p-3 font-medium"
+                                            >
+                                                Item
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="p-3 font-medium"
+                                            >
+                                                Category
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="p-3 font-medium"
+                                            >
+                                                Slug
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="p-3 text-right font-medium"
+                                            >
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {items.data.map((item) => (
+                                            <tr
+                                                key={item.id}
+                                                className="border-b last:border-0"
+                                            >
+                                                <td className="p-3">
+                                                    <div className="flex items-center gap-3">
+                                                        {item.image_url ? (
+                                                            <img
+                                                                src={
+                                                                    item.image_url
+                                                                }
+                                                                alt=""
+                                                                loading="lazy"
+                                                                className="size-12 shrink-0 rounded-xl bg-muted object-cover"
+                                                            />
+                                                        ) : (
+                                                            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-300">
+                                                                <Package
+                                                                    className="size-5"
+                                                                    aria-hidden="true"
+                                                                />
+                                                            </span>
+                                                        )}
+                                                        <Link
+                                                            href={show(item.id)}
+                                                            className="min-w-32 font-medium break-words hover:underline"
+                                                        >
+                                                            {item.name}
+                                                        </Link>
+                                                    </div>
+                                                </td>
+                                                <td className="p-3">
+                                                    <Badge variant="secondary">
+                                                        {item.category.name}
+                                                    </Badge>
+                                                </td>
+                                                <td className="p-3 font-mono text-xs text-muted-foreground">
+                                                    {item.slug}
+                                                </td>
+                                                <td className="p-3">
+                                                    <div className="flex justify-end gap-2">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={show(
+                                                                    item.id,
+                                                                )}
+                                                                aria-label={`View ${item.name}`}
+                                                            >
+                                                                View
+                                                            </Link>
+                                                        </Button>
+                                                        {item.can.update && (
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                asChild
+                                                            >
+                                                                <Link
+                                                                    href={edit(
+                                                                        item.id,
+                                                                    )}
+                                                                    aria-label={`Edit ${item.name}`}
+                                                                >
+                                                                    Edit
+                                                                </Link>
+                                                            </Button>
+                                                        )}
+                                                        {item.can.delete && (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() =>
+                                                                    setSelected(
+                                                                        item,
+                                                                    )
+                                                                }
+                                                                aria-label={`Delete ${item.name}`}
+                                                            >
+                                                                Delete
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                        <nav
+                            aria-label="Item pagination"
+                            className="flex flex-wrap items-center justify-between gap-3 border-t pt-4"
+                        >
+                            <p className="text-sm text-muted-foreground">
+                                Page {items.current_page} of {items.last_page} ·{' '}
+                                {items.total} items
+                            </p>
+                            <div className="flex gap-2">
+                                {items.prev_page_url ? (
+                                    <Button variant="outline" size="sm" asChild>
+                                        <Link
+                                            href={items.prev_page_url}
+                                            preserveScroll
+                                        >
+                                            Previous
+                                        </Link>
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled
+                                    >
+                                        Previous
+                                    </Button>
+                                )}
+                                {items.next_page_url ? (
+                                    <Button variant="outline" size="sm" asChild>
+                                        <Link
+                                            href={items.next_page_url}
+                                            preserveScroll
+                                        >
+                                            Next
+                                        </Link>
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled
+                                    >
+                                        Next
+                                    </Button>
+                                )}
+                            </div>
+                        </nav>
+                    </CardContent>
+                </Card>
+                <ItemDeleteDialog
+                    item={selected}
+                    onClose={() => setSelected(null)}
+                />
+            </PageContainer>
+        </>
+    );
+}
+ItemsIndex.layout = { breadcrumbs: [{ title: 'Items', href: index() }] };

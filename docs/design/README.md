@@ -3,6 +3,7 @@ UI/UX DESIGN INSPIRATION
 Use docs/design/admin-dashboard-reference.png as the visual reference.
 
 Follow its:
+
 - White sidebar with icons and a blue active navigation state.
 - Spacious header and main content area.
 - Light backgrounds, pastel summary cards, and blue/cyan accents.
@@ -10,6 +11,7 @@ Follow its:
 - Welcome banner and consistent spacing.
 
 Adapt the layout to our actual features:
+
 - Navigation: Dashboard, Users, Roles & Permissions, Items, Categories.
 - Summary cards: Users, Roles, Items, Categories, subject to permissions.
 - Main content: recent items with image, name, category, and actions.

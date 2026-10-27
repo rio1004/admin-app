@@ -12,6 +12,7 @@ feature specification and AGENTS.md as project-wide guidance.
 ## Inspect before implementation
 
 Identify:
+
 - Installed Laravel, React, and authorization package versions.
 - Authentication and account registration behavior.
 - Inertia or other existing request/rendering conventions.
@@ -56,6 +57,7 @@ Represent images as storage paths in the database and expose usable
 URLs separately.
 
 Distinguish three edit intentions:
+
 - No replacement or removal: keep the existing image.
 - New upload: replace the image.
 - Explicit removal: clear the image.

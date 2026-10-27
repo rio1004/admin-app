@@ -17,6 +17,10 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return $this->profileRules($this->user()->id);
+        return [
+            ...$this->profileRules($this->user()->id),
+            'roles' => ['prohibited'], 'permissions' => ['prohibited'],
+            'role' => ['prohibited'], 'role_id' => ['prohibited'],
+        ];
     }
 }

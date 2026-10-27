@@ -27,6 +27,8 @@ export default function AppearanceToggleTab({
         >
             {tabs.map(({ value, icon: Icon, label }) => (
                 <button
+                    type="button"
+                    aria-pressed={appearance === value}
                     key={value}
                     onClick={() => updateAppearance(value)}
                     className={cn(
