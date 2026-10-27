@@ -2,6 +2,7 @@ export type Item = {
     id: number;
     name: string;
     description: string | null;
+    value: string | null;
     slug: string;
     category_id: number;
     category: { id: number; name: string };

@@ -46,6 +46,7 @@ return [
         'uncompromised' => '该:attribute已出现在数据泄露中，请选择其他密码。',
     ],
     'attributes' => [
+        'value' => '值',
         'name' => '名称', 'username' => '用户名', 'email' => '邮箱',
         'password' => '密码', 'password_confirmation' => '确认密码',
         'current_password' => '当前密码', 'category_id' => '分类',

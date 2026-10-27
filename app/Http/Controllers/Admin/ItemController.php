@@ -98,6 +98,7 @@ class ItemController extends Controller
             'name' => $request->validated('name'), 'category_id' => (int) $request->validated('category_id'),
             'link' => $request->validated('link') ?? null,
             'description' => $request->validated('description') ?? null,
+            'value' => $request->validated('value') ?? null,
         ], $upload instanceof UploadedFile ? $upload : null, $request->boolean('remove_image'));
     }
 

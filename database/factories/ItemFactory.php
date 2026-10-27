@@ -13,6 +13,6 @@ class ItemFactory extends Factory
     public function definition(): array
     {
         return ['name' => fake()->words(3, true), 'description' => null, 'category_id' => Category::factory(),
-            'slug' => fake()->unique()->slug(), 'image' => null, 'link' => null];
+            'slug' => fake()->unique()->slug(), 'image' => null, 'link' => null, 'value' => null];
     }
 }

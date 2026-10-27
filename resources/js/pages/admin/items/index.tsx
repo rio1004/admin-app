@@ -245,6 +245,12 @@ export default function ItemsIndex({
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
+                                                {t('Value')}
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="p-3 font-medium"
+                                            >
                                                 {t('Description')}
                                             </th>
                                             <th
@@ -299,6 +305,14 @@ export default function ItemsIndex({
                                                             {item.name}
                                                         </Link>
                                                     </div>
+                                                </td>
+                                                <td className="max-w-xs p-3 text-muted-foreground">
+                                                    <p className="line-clamp-2 min-w-24 break-words">
+                                                        {item.value ??
+                                                            t(
+                                                                'No value provided',
+                                                            )}
+                                                    </p>
                                                 </td>
                                                 <td className="max-w-xs p-3 text-muted-foreground">
                                                     <p className="line-clamp-2 min-w-40 break-words whitespace-pre-wrap">

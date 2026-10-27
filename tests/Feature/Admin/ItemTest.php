@@ -102,6 +102,37 @@ test('users without item update access cannot change descriptions', function () 
     expect($item->fresh()->description)->toBe('Original description');
 });
 
+test('item values are optional strings that can be created viewed updated and cleared', function () {
+    $this->actingAs($this->admin)->post('/admin/items', [...$this->data, 'value' => '00123 / Large'])->assertSessionHasNoErrors();
+    $item = Item::query()->sole();
+    expect($item->value)->toBe('00123 / Large');
+    foreach (["/admin/items/$item->id", "/admin/items/$item->id/edit"] as $url) {
+        $this->get($url)->assertInertia(fn (Assert $page) => $page->where('item.value', '00123 / Large'));
+    }
+    $this->get('/admin/items')->assertInertia(fn (Assert $page) => $page->where('items.data.0.value', '00123 / Large'));
+    foreach (['0', str_repeat('x', 255), ''] as $value) {
+        $this->put("/admin/items/$item->id", [...$this->data, 'value' => $value])->assertSessionHasNoErrors();
+        expect($item->fresh()->value)->toBe($value === '' ? null : $value);
+    }
+    $this->post('/admin/items', $this->data)->assertSessionHasNoErrors();
+    expect(Item::query()->latest('id')->first()->value)->toBeNull();
+});
+
+test('invalid item values are rejected on creation and update', function (mixed $value) {
+    $item = Item::factory()->create(['value' => 'Keep this']);
+    $this->actingAs($this->admin)->post('/admin/items', [...$this->data, 'value' => $value])->assertSessionHasErrors('value');
+    $this->put("/admin/items/$item->id", [...$this->data, 'value' => $value])->assertSessionHasErrors('value');
+    expect(Item::count())->toBe(1)->and($item->fresh()->value)->toBe('Keep this');
+})->with([[['invalid']], [str_repeat('x', 256)], [123]]);
+
+test('users without update permission cannot change item values', function () {
+    $item = Item::factory()->create(['value' => 'Original']);
+    $user = User::factory()->create();
+    $user->givePermissionTo(['admin.access', 'items.view']);
+    $this->actingAs($user)->put("/admin/items/$item->id", [...$this->data, 'value' => 'Changed'])->assertForbidden();
+    expect($item->fresh()->value)->toBe('Original');
+});
+
 test('item names and category selection are validated', function (array $change, string $error) {
     $this->actingAs($this->admin)->post('/admin/items', [...$this->data, ...$change])->assertSessionHasErrors($error);
     expect(Item::count())->toBe(0);

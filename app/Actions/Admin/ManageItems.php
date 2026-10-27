@@ -15,7 +15,7 @@ final class ManageItems
 {
     public function __construct(private ItemImages $images) {}
 
-    /** @param array{name: string, description?: string|null, category_id: int, link: string|null} $data */
+    /** @param array{name: string, description?: string|null, value?: string|null, category_id: int, link: string|null} $data */
     public function save(?Item $item, array $data, ?UploadedFile $upload, bool $removeImage): Item
     {
         $newPath = $upload ? $this->images->store($upload) : null;
@@ -31,6 +31,9 @@ final class ManageItems
                         $record = $item ? Item::query()->whereKey($item->id)->lockForUpdate()->firstOrFail() : new Item;
                         $oldPath = $record->image;
                         $record->name = $data['name'];
+                        if (array_key_exists('value', $data)) {
+                            $record->value = $data['value'];
+                        }
                         if (array_key_exists('description', $data)) {
                             $record->description = $data['description'];
                         }

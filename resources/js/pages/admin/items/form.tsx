@@ -36,6 +36,7 @@ export default function ItemForm({
     const form = useForm<{
         name: string;
         description: string;
+        value: string;
         category_id: string;
         link: string;
         image: File | null;
@@ -44,6 +45,7 @@ export default function ItemForm({
     }>({
         name: item?.name ?? '',
         description: item?.description ?? '',
+        value: item?.value ?? '',
         category_id: item ? String(item.category_id) : '',
         link: item?.link ?? '',
         image: null,
@@ -170,6 +172,43 @@ export default function ItemForm({
                                             <InputError
                                                 id="item-name-error"
                                                 message={form.errors.name}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="item-value">
+                                                {t('Value')}{' '}
+                                                <span className="font-normal text-muted-foreground">
+                                                    {t('(optional)')}
+                                                </span>
+                                            </Label>
+                                            <Input
+                                                id="item-value"
+                                                type="text"
+                                                maxLength={255}
+                                                value={form.data.value}
+                                                disabled={form.processing}
+                                                onChange={(event) =>
+                                                    form.setData(
+                                                        'value',
+                                                        event.target.value,
+                                                    )
+                                                }
+                                                aria-invalid={
+                                                    !!form.errors.value
+                                                }
+                                                aria-describedby="item-value-help item-value-error"
+                                            />
+                                            <p
+                                                id="item-value-help"
+                                                className="text-xs text-muted-foreground"
+                                            >
+                                                {t(
+                                                    'Optional text, up to 255 characters.',
+                                                )}
+                                            </p>
+                                            <InputError
+                                                id="item-value-error"
+                                                message={form.errors.value}
                                             />
                                         </div>
                                         <div className="space-y-2">

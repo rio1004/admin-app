@@ -12,12 +12,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property string $name
  * @property string|null $description
+ * @property string|null $value
  * @property int $category_id
  * @property string|null $image
  * @property string|null $link
  * @property string $slug
  */
-#[Fillable(['name', 'description', 'category_id', 'link'])]
+#[Fillable(['name', 'description', 'value', 'category_id', 'link'])]
 class Item extends Model
 {
     /** @use HasFactory<ItemFactory> */

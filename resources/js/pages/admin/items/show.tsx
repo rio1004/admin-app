@@ -81,6 +81,14 @@ export default function ItemShow({ item }: { item: Item }) {
                                 </div>
                                 <div>
                                     <dt className="text-sm text-muted-foreground">
+                                        {t('Value')}
+                                    </dt>
+                                    <dd className="mt-1 text-sm leading-6 break-words">
+                                        {item.value ?? t('No value provided')}
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt className="text-sm text-muted-foreground">
                                         {t('Description')}
                                     </dt>
                                     <dd className="mt-1 text-sm leading-6 break-words whitespace-pre-wrap">

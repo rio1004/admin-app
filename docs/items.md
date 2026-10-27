@@ -1,5 +1,7 @@
 # Item milestone
 
+Items also have an optional Value text field (up to 255 characters). Values appear in the create/edit form, list, and details. Empty values are stored as null; text such as `00123` or `0` is preserved as a string. Run `php artisan migrate` and `npm run build` to apply the field.
+
 Items have an optional plain-text Description (up to 5,000 characters). Create/edit forms support multiple lines; the list shows a short preview and the detail page shows the full text. Empty descriptions are stored as null. Apply the description migration with `php artisan migrate` and rebuild assets with `npm run build`; existing items remain intact.
 
 Items are available at `/admin/items` with create, edit, detail, and delete screens matching the existing admin design. Lists support name/slug search, category filtering, allowlisted sorting, and server pagination at 10 records per page. Pagination preserves the query.

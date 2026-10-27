@@ -22,6 +22,7 @@ class ItemRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:120'],
             'description' => ['nullable', 'string', 'max:5000'],
+            'value' => ['nullable', 'string', 'max:255'],
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')],
             'link' => ['nullable', 'string', 'max:2048', 'url:http,https'],
             'image' => ['nullable', Rule::prohibitedIf($this->boolean('remove_image')), 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=4096,max_height=4096'],
