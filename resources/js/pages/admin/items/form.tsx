@@ -1,20 +1,20 @@
-import { useTranslation } from '@/hooks/use-language';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { Package, Upload } from 'lucide-react';
-import { useRef, useState } from 'react';
-import { EmptyState } from '@/components/admin/empty-state';
-import { PageContainer } from '@/components/admin/page-container';
-import { PageHeading } from '@/components/admin/page-heading';
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { create as createCategory } from '@/routes/admin/categories';
-import { index, store, update } from '@/routes/admin/items';
-import { edit as profileEdit } from '@/routes/profile';
-import type { CategoryOption, Item } from '@/types/item';
+import { useTranslation } from "@/hooks/use-language";
+import { Head, Link, useForm } from "@inertiajs/react";
+import { Package, Upload } from "lucide-react";
+import { useRef, useState } from "react";
+import { EmptyState } from "@/components/admin/empty-state";
+import { PageContainer } from "@/components/admin/page-container";
+import { PageHeading } from "@/components/admin/page-heading";
+import InputError from "@/components/input-error";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { create as createCategory } from "@/routes/admin/categories";
+import { index, store, update } from "@/routes/admin/items";
+import { edit as profileEdit } from "@/routes/profile";
+import type { CategoryOption, Item } from "@/types/item";
 
 type Props = {
     item: Item | null;
@@ -43,49 +43,49 @@ export default function ItemForm({
         remove_image: boolean;
         _method: string;
     }>({
-        name: item?.name ?? '',
-        description: item?.description ?? '',
-        value: item?.value ?? '',
-        category_id: item ? String(item.category_id) : '',
-        link: item?.link ?? '',
+        name: item?.name ?? "",
+        description: item?.description ?? "",
+        value: item?.value ?? "",
+        category_id: item ? String(item.category_id) : "",
+        link: item?.link ?? "",
         image: null,
         remove_image: false,
-        _method: item ? 'put' : 'post',
+        _method: item ? "put" : "post",
     });
     const uploadDisabled = form.processing || form.data.remove_image;
 
     function selectImage(files: FileList | null) {
         if (uploadDisabled || !files?.length) return;
 
-        form.clearErrors('image');
+        form.clearErrors("image");
         const image = files[0];
         if (files.length !== 1) {
-            form.setError('image', 'Choose one image at a time.');
+            form.setError("image", "Choose one image at a time.");
             return;
         }
-        if (!['image/jpeg', 'image/png', 'image/webp'].includes(image.type)) {
-            form.setError('image', 'Choose a JPEG, PNG, or WebP image.');
+        if (!["image/jpeg", "image/png", "image/webp"].includes(image.type)) {
+            form.setError("image", "Choose a JPEG, PNG, or WebP image.");
             return;
         }
         if (image.size > 5 * 1024 * 1024) {
-            form.setError('image', 'The image must be no larger than 5 MB.');
+            form.setError("image", "The image must be no larger than 5 MB.");
             return;
         }
-        form.setData('image', image);
-        if (fileInput.current) fileInput.current.value = '';
+        form.setData("image", image);
+        if (fileInput.current) fileInput.current.value = "";
     }
     return (
         <>
-            <Head title={item ? t('Edit item') : t('Create item')} />
+            <Head title={item ? t("Edit item") : t("Create item")} />
             <PageContainer>
                 <PageHeading
                     title={
                         item
-                            ? t('Edit {name}', { name: item.name })
-                            : t('Create item')
+                            ? t("Edit {name}", { name: item.name })
+                            : t("Create item")
                     }
                     description={t(
-                        'Give your content a home, an image, and an optional destination.',
+                        "Give your content a home, an image, and an optional destination.",
                     )}
                 />
                 {categories.length === 0 ? (
@@ -93,21 +93,21 @@ export default function ItemForm({
                         <CardContent>
                             <EmptyState
                                 icon={Package}
-                                title={t('Create a category first')}
+                                title={t("Create a category first")}
                                 description={t(
-                                    'Every item needs a category. Add a category before creating an item.',
+                                    "Every item needs a category. Add a category before creating an item.",
                                 )}
                                 actions={
                                     canCreateCategory ? (
                                         <Button asChild>
                                             <Link href={createCategory()}>
-                                                {t('Create category')}
+                                                {t("Create category")}
                                             </Link>
                                         </Button>
                                     ) : (
                                         <p className="text-sm text-muted-foreground">
                                             {t(
-                                                'Ask a category manager to create one.',
+                                                "Ask a category manager to create one.",
                                             )}
                                         </p>
                                     )
@@ -131,14 +131,14 @@ export default function ItemForm({
                                             forceFormData: true,
                                             preserveScroll: true,
                                             onSuccess: () => {
-                                                form.setData('image', null);
+                                                form.setData("image", null);
                                                 form.setData(
-                                                    'remove_image',
+                                                    "remove_image",
                                                     false,
                                                 );
                                                 if (fileInput.current)
                                                     fileInput.current.value =
-                                                        '';
+                                                        "";
                                                 if (!item) form.reset();
                                             },
                                         },
@@ -149,7 +149,7 @@ export default function ItemForm({
                                     <div className="space-y-6">
                                         <div className="space-y-2">
                                             <Label htmlFor="item-name">
-                                                {t('Item name')}
+                                                {t("Item name")}
                                             </Label>
                                             <Input
                                                 id="item-name"
@@ -160,7 +160,7 @@ export default function ItemForm({
                                                 disabled={form.processing}
                                                 onChange={(event) =>
                                                     form.setData(
-                                                        'name',
+                                                        "name",
                                                         event.target.value,
                                                     )
                                                 }
@@ -176,9 +176,9 @@ export default function ItemForm({
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="item-value">
-                                                {t('Value')}{' '}
+                                                {t("Value")}{" "}
                                                 <span className="font-normal text-muted-foreground">
-                                                    {t('(optional)')}
+                                                    {t("(optional)")}
                                                 </span>
                                             </Label>
                                             <Input
@@ -189,7 +189,7 @@ export default function ItemForm({
                                                 disabled={form.processing}
                                                 onChange={(event) =>
                                                     form.setData(
-                                                        'value',
+                                                        "value",
                                                         event.target.value,
                                                     )
                                                 }
@@ -203,7 +203,7 @@ export default function ItemForm({
                                                 className="text-xs text-muted-foreground"
                                             >
                                                 {t(
-                                                    'Optional text, up to 255 characters.',
+                                                    "Optional text, up to 255 characters.",
                                                 )}
                                             </p>
                                             <InputError
@@ -213,9 +213,9 @@ export default function ItemForm({
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="item-description">
-                                                {t('Description')}{' '}
+                                                {t("Description")}{" "}
                                                 <span className="font-normal text-muted-foreground">
-                                                    {t('(optional)')}
+                                                    {t("(optional)")}
                                                 </span>
                                             </Label>
                                             <textarea
@@ -226,12 +226,12 @@ export default function ItemForm({
                                                 disabled={form.processing}
                                                 onChange={(event) =>
                                                     form.setData(
-                                                        'description',
+                                                        "description",
                                                         event.target.value,
                                                     )
                                                 }
                                                 placeholder={t(
-                                                    'Describe this item',
+                                                    "Describe this item",
                                                 )}
                                                 aria-invalid={
                                                     !!form.errors.description
@@ -243,7 +243,7 @@ export default function ItemForm({
                                                 id="item-description-help"
                                                 className="text-xs text-muted-foreground"
                                             >
-                                                {t('Up to 5,000 characters.')}
+                                                {t("Up to 5,000 characters.")}
                                             </p>
                                             <InputError
                                                 id="item-description-error"
@@ -254,7 +254,7 @@ export default function ItemForm({
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="item-category">
-                                                {t('Category')}
+                                                {t("Category")}
                                             </Label>
                                             <select
                                                 id="item-category"
@@ -263,7 +263,7 @@ export default function ItemForm({
                                                 value={form.data.category_id}
                                                 onChange={(event) =>
                                                     form.setData(
-                                                        'category_id',
+                                                        "category_id",
                                                         event.target.value,
                                                     )
                                                 }
@@ -274,7 +274,7 @@ export default function ItemForm({
                                                 className="block h-10 w-full rounded-md border bg-background px-3 text-sm"
                                             >
                                                 <option value="" disabled>
-                                                    {t('Select a category')}
+                                                    {t("Select a category")}
                                                 </option>
                                                 {categories.map((category) => (
                                                     <option
@@ -294,9 +294,9 @@ export default function ItemForm({
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="item-link">
-                                                {t('Link')}{' '}
+                                                {t("Link")}{" "}
                                                 <span className="font-normal text-muted-foreground">
-                                                    {t('(optional)')}
+                                                    {t("(optional)")}
                                                 </span>
                                             </Label>
                                             <Input
@@ -308,7 +308,7 @@ export default function ItemForm({
                                                 disabled={form.processing}
                                                 onChange={(event) =>
                                                     form.setData(
-                                                        'link',
+                                                        "link",
                                                         event.target.value,
                                                     )
                                                 }
@@ -322,7 +322,7 @@ export default function ItemForm({
                                                 className="text-xs text-muted-foreground"
                                             >
                                                 {t(
-                                                    'HTTP and HTTPS links only.',
+                                                    "HTTP and HTTPS links only.",
                                                 )}
                                             </p>
                                             <InputError
@@ -332,29 +332,29 @@ export default function ItemForm({
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="item-slug">
-                                                {t('Slug')}
+                                                {t("Slug")}
                                             </Label>
                                             <Input
                                                 id="item-slug"
                                                 readOnly
-                                                value={item?.slug ?? ''}
+                                                value={item?.slug ?? ""}
                                                 placeholder={t(
-                                                    'Generated when you save',
+                                                    "Generated when you save",
                                                 )}
                                                 className="bg-muted/50 font-mono"
                                             />
                                             <p className="text-xs leading-5 text-muted-foreground">
                                                 {t(
-                                                    'Generated on creation and kept when you rename the item.',
+                                                    "Generated on creation and kept when you rename the item.",
                                                 )}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="space-y-4 rounded-xl border bg-muted/20 p-5">
                                         <Label htmlFor="item-image">
-                                            {t('Image')}{' '}
+                                            {t("Image")}{" "}
                                             <span className="font-normal text-muted-foreground">
-                                                {t('(optional)')}
+                                                {t("(optional)")}
                                             </span>
                                         </Label>
                                         <button
@@ -373,8 +373,8 @@ export default function ItemForm({
                                                 event.preventDefault();
                                                 event.dataTransfer.dropEffect =
                                                     uploadDisabled
-                                                        ? 'none'
-                                                        : 'copy';
+                                                        ? "none"
+                                                        : "copy";
                                             }}
                                             onDragLeave={(event) => {
                                                 event.preventDefault();
@@ -394,10 +394,10 @@ export default function ItemForm({
                                                 );
                                             }}
                                             aria-label={t(
-                                                'Upload item image: drop a file or browse',
+                                                "Upload item image: drop a file or browse",
                                             )}
                                             aria-describedby="item-image-help item-image-error"
-                                            className={`block w-full space-y-3 rounded-lg border-2 border-dashed p-4 text-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50 ${isDragging ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50 hover:bg-muted/50'}`}
+                                            className={`block w-full space-y-3 rounded-lg border-2 border-dashed p-4 text-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50 ${isDragging ? "border-primary bg-primary/10" : "border-border hover:border-primary/50 hover:bg-muted/50"}`}
                                         >
                                             {item?.image_url &&
                                             !form.data.remove_image ? (
@@ -415,12 +415,12 @@ export default function ItemForm({
                                                     <span className="ml-3 text-sm">
                                                         {form.data.remove_image
                                                             ? t(
-                                                                  'Image will be removed',
+                                                                  "Image will be removed",
                                                               )
                                                             : (form.data.image
                                                                   ?.name ??
                                                               t(
-                                                                  'No image selected',
+                                                                  "No image selected",
                                                               ))}
                                                     </span>
                                                 </div>
@@ -431,9 +431,9 @@ export default function ItemForm({
                                                     aria-hidden="true"
                                                 />
                                                 {isDragging
-                                                    ? t('Drop image here')
+                                                    ? t("Drop image here")
                                                     : t(
-                                                          'Drag and drop an image, or click to browse',
+                                                          "Drag and drop an image, or click to browse",
                                                       )}
                                             </span>
                                         </button>
@@ -456,7 +456,7 @@ export default function ItemForm({
                                             className="text-xs leading-5 text-muted-foreground"
                                         >
                                             {t(
-                                                'JPEG, PNG, or WebP. Up to 5 MB and 4096 \u00d7 4096 pixels. Leave empty to keep the current image.',
+                                                "JPEG, PNG, or WebP. Up to 5 MB and 4096 \u00d7 4096 pixels. Leave empty to keep the current image.",
                                             )}
                                         </p>
                                         <InputError
@@ -475,18 +475,18 @@ export default function ItemForm({
                                                     disabled={form.processing}
                                                     onClick={() => {
                                                         form.clearErrors(
-                                                            'image',
+                                                            "image",
                                                         );
                                                         form.setData(
-                                                            'image',
+                                                            "image",
                                                             null,
                                                         );
                                                         if (fileInput.current)
                                                             fileInput.current.value =
-                                                                '';
+                                                                "";
                                                     }}
                                                 >
-                                                    {t('Clear selection')}
+                                                    {t("Clear selection")}
                                                 </Button>
                                             </div>
                                         )}
@@ -502,24 +502,24 @@ export default function ItemForm({
                                                         checked,
                                                     ) => {
                                                         form.setData(
-                                                            'remove_image',
+                                                            "remove_image",
                                                             checked === true,
                                                         );
                                                         if (checked) {
                                                             form.setData(
-                                                                'image',
+                                                                "image",
                                                                 null,
                                                             );
                                                             if (
                                                                 fileInput.current
                                                             )
                                                                 fileInput.current.value =
-                                                                    '';
+                                                                    "";
                                                         }
                                                     }}
                                                 />
                                                 <Label htmlFor="remove-image">
-                                                    {t('Remove current image')}
+                                                    {t("Remove current image")}
                                                 </Label>
                                             </div>
                                         )}
@@ -534,7 +534,7 @@ export default function ItemForm({
                                         className="space-y-2 text-sm text-muted-foreground"
                                     >
                                         <p>
-                                            {t('Uploading:')}{' '}
+                                            {t("Uploading:")}{" "}
                                             {form.progress.percentage ?? 0}%
                                         </p>
                                         <progress
@@ -544,7 +544,7 @@ export default function ItemForm({
                                             }
                                             max={100}
                                             aria-label={t(
-                                                'Image upload progress',
+                                                "Image upload progress",
                                             )}
                                         />
                                     </div>
@@ -552,10 +552,10 @@ export default function ItemForm({
                                 <div className="flex flex-wrap items-center gap-3 border-t pt-5">
                                     <Button disabled={form.processing}>
                                         {form.processing
-                                            ? t('Saving...')
+                                            ? t("Saving...")
                                             : item
-                                              ? t('Save changes')
-                                              : t('Create item')}
+                                              ? t("Save changes")
+                                              : t("Create item")}
                                     </Button>
                                     <Button variant="outline" asChild>
                                         <Link
@@ -565,7 +565,7 @@ export default function ItemForm({
                                                     : profileEdit()
                                             }
                                         >
-                                            {t('Cancel')}
+                                            {t("Cancel")}
                                         </Link>
                                     </Button>
                                     {form.recentlySuccessful && (
@@ -573,7 +573,7 @@ export default function ItemForm({
                                             role="status"
                                             className="text-sm text-muted-foreground"
                                         >
-                                            {t('Item saved.')}
+                                            {t("Item saved.")}
                                         </p>
                                     )}
                                 </div>

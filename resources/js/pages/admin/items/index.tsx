@@ -263,7 +263,7 @@ export default function ItemsIndex({
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                {t('Slug')}
+                                                {t('Link')}
                                             </th>
                                             <th
                                                 scope="col"
@@ -327,8 +327,26 @@ export default function ItemsIndex({
                                                         {item.category.name}
                                                     </Badge>
                                                 </td>
-                                                <td className="p-3 font-mono text-xs text-muted-foreground">
-                                                    {item.slug}
+                                                <td className="p-3 text-sm text-muted-foreground">
+                                                    {item.link ? (
+                                                        <a
+                                                            href={item.link}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            title={item.link}
+                                                            className="block max-w-48 truncate rounded-sm text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                                                        >
+                                                            {item.link}
+                                                            <span className="sr-only">
+                                                                {' '}
+                                                                {t(
+                                                                    '(opens in a new tab)',
+                                                                )}
+                                                            </span>
+                                                        </a>
+                                                    ) : (
+                                                        t('No link provided')
+                                                    )}
                                                 </td>
                                                 <td className="p-3">
                                                     <div className="flex justify-end gap-2">
