@@ -1,6 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Package } from 'lucide-react';
-import { useRef } from 'react';
+import { Package, Upload } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { EmptyState } from '@/components/admin/empty-state';
 import { PageContainer } from '@/components/admin/page-container';
 import { PageHeading } from '@/components/admin/page-heading';
@@ -29,6 +29,8 @@ export default function ItemForm({
     canCreateCategory,
 }: Props) {
     const fileInput = useRef<HTMLInputElement>(null);
+    const dragDepth = useRef(0);
+    const [isDragging, setIsDragging] = useState(false);
     const form = useForm<{
         name: string;
         category_id: string;
@@ -44,6 +46,28 @@ export default function ItemForm({
         remove_image: false,
         _method: item ? 'put' : 'post',
     });
+    const uploadDisabled = form.processing || form.data.remove_image;
+
+    function selectImage(files: FileList | null) {
+        if (uploadDisabled || !files?.length) return;
+
+        form.clearErrors('image');
+        const image = files[0];
+        if (files.length !== 1) {
+            form.setError('image', 'Choose one image at a time.');
+            return;
+        }
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(image.type)) {
+            form.setError('image', 'Choose a JPEG, PNG, or WebP image.');
+            return;
+        }
+        if (image.size > 5 * 1024 * 1024) {
+            form.setError('image', 'The image must be no larger than 5 MB.');
+            return;
+        }
+        form.setData('image', image);
+        if (fileInput.current) fileInput.current.value = '';
+    }
     return (
         <>
             <Head title={item ? 'Edit item' : 'Create item'} />
@@ -235,26 +259,78 @@ export default function ItemForm({
                                                 (optional)
                                             </span>
                                         </Label>
-                                        {item?.image_url &&
-                                        !form.data.remove_image ? (
-                                            <img
-                                                src={item.image_url}
-                                                alt={item.name}
-                                                className="h-48 w-full rounded-lg bg-muted object-contain"
-                                            />
-                                        ) : (
-                                            <div className="flex h-40 items-center justify-center rounded-lg border border-dashed text-muted-foreground">
-                                                <Package
-                                                    className="size-8"
+                                        <button
+                                            type="button"
+                                            disabled={uploadDisabled}
+                                            onClick={() =>
+                                                fileInput.current?.click()
+                                            }
+                                            onDragEnter={(event) => {
+                                                event.preventDefault();
+                                                if (uploadDisabled) return;
+                                                dragDepth.current++;
+                                                setIsDragging(true);
+                                            }}
+                                            onDragOver={(event) => {
+                                                event.preventDefault();
+                                                event.dataTransfer.dropEffect =
+                                                    uploadDisabled
+                                                        ? 'none'
+                                                        : 'copy';
+                                            }}
+                                            onDragLeave={(event) => {
+                                                event.preventDefault();
+                                                dragDepth.current = Math.max(
+                                                    0,
+                                                    dragDepth.current - 1,
+                                                );
+                                                if (dragDepth.current === 0)
+                                                    setIsDragging(false);
+                                            }}
+                                            onDrop={(event) => {
+                                                event.preventDefault();
+                                                dragDepth.current = 0;
+                                                setIsDragging(false);
+                                                selectImage(
+                                                    event.dataTransfer.files,
+                                                );
+                                            }}
+                                            aria-label="Upload item image: drop a file or browse"
+                                            aria-describedby="item-image-help item-image-error"
+                                            className={`block w-full space-y-3 rounded-lg border-2 border-dashed p-4 text-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50 ${isDragging ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50 hover:bg-muted/50'}`}
+                                        >
+                                            {item?.image_url &&
+                                            !form.data.remove_image ? (
+                                                <img
+                                                    src={item.image_url}
+                                                    alt={item.name}
+                                                    className="h-48 w-full rounded-lg bg-muted object-contain"
+                                                />
+                                            ) : (
+                                                <div className="flex h-40 items-center justify-center rounded-lg border border-dashed text-muted-foreground">
+                                                    <Package
+                                                        className="size-8"
+                                                        aria-hidden="true"
+                                                    />
+                                                    <span className="ml-3 text-sm">
+                                                        {form.data.remove_image
+                                                            ? 'Image will be removed'
+                                                            : (form.data.image
+                                                                  ?.name ??
+                                                              'No image selected')}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            <span className="flex items-center justify-center gap-2 text-sm font-medium">
+                                                <Upload
+                                                    className="size-4"
                                                     aria-hidden="true"
                                                 />
-                                                <span className="ml-3 text-sm">
-                                                    {form.data.remove_image
-                                                        ? 'Image will be removed'
-                                                        : 'No image selected'}
-                                                </span>
-                                            </div>
-                                        )}
+                                                {isDragging
+                                                    ? 'Drop image here'
+                                                    : 'Drag and drop an image, or click to browse'}
+                                            </span>
+                                        </button>
                                         <Input
                                             ref={fileInput}
                                             id="item-image"
@@ -265,11 +341,7 @@ export default function ItemForm({
                                                 form.data.remove_image
                                             }
                                             onChange={(event) =>
-                                                form.setData(
-                                                    'image',
-                                                    event.target.files?.[0] ??
-                                                        null,
-                                                )
+                                                selectImage(event.target.files)
                                             }
                                             aria-describedby="item-image-help item-image-error"
                                         />
@@ -287,7 +359,7 @@ export default function ItemForm({
                                         />
                                         {form.data.image && (
                                             <div className="flex flex-wrap items-center gap-3 text-sm">
-                                                <span>
+                                                <span role="status">
                                                     {form.data.image.name}
                                                 </span>
                                                 <Button
@@ -296,6 +368,9 @@ export default function ItemForm({
                                                     size="sm"
                                                     disabled={form.processing}
                                                     onClick={() => {
+                                                        form.clearErrors(
+                                                            'image',
+                                                        );
                                                         form.setData(
                                                             'image',
                                                             null,
