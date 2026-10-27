@@ -278,7 +278,8 @@ export default function CategoriesIndex({
                                                         {category.can
                                                             .delete && (
                                                             <Button
-                                                                variant="ghost"
+                                                                variant="destructive"
+                                                                className='cursor-pointer'
                                                                 size="sm"
                                                                 onClick={() => {
                                                                     deletion.clearErrors();
