@@ -2,8 +2,10 @@ import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import type { FlashToast } from '@/types/ui';
+import { useTranslation } from '@/hooks/use-language';
 
 export function useFlashToast(): void {
+    const t = useTranslation();
     useEffect(() => {
         return router.on('flash', (event) => {
             const flash = (event as CustomEvent).detail?.flash;
@@ -13,7 +15,7 @@ export function useFlashToast(): void {
                 return;
             }
 
-            toast[data.type](data.message);
+            toast[data.type](t(data.message));
         });
-    }, []);
+    }, [t]);
 }

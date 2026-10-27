@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import { useForm } from '@inertiajs/react';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ export function ItemDeleteDialog({
     item: { id: number; name: string } | null;
     onClose: () => void;
 }) {
+    const t = useTranslation();
     const form = useForm({});
     return (
         <Dialog
@@ -31,10 +33,13 @@ export function ItemDeleteDialog({
         >
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Delete {item?.name}?</DialogTitle>
+                    <DialogTitle>
+                        {t('Delete')} {item?.name}?
+                    </DialogTitle>
                     <DialogDescription>
-                        This permanently deletes the item and removes its stored
-                        image. This action cannot be undone.
+                        {t(
+                            'This permanently deletes the item and removes its stored image. This action cannot be undone.',
+                        )}
                     </DialogDescription>
                 </DialogHeader>
                 <InputError
@@ -49,7 +54,7 @@ export function ItemDeleteDialog({
                             onClose();
                         }}
                     >
-                        Cancel
+                        {t('Cancel')}
                     </Button>
                     <Button
                         variant="destructive"
@@ -62,7 +67,7 @@ export function ItemDeleteDialog({
                                 });
                         }}
                     >
-                        {form.processing ? 'Deleting...' : 'Delete item'}
+                        {form.processing ? t('Deleting...') : t('Delete item')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

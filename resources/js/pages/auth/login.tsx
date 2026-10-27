@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import { Form, Head } from '@inertiajs/react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
@@ -16,9 +17,10 @@ type Props = {
 };
 
 export default function Login({ status, canResetPassword }: Props) {
+    const t = useTranslation();
     return (
         <>
-            <Head title="Log in" />
+            <Head title={t('Log in')} />
 
             <Form
                 {...store.form()}
@@ -29,7 +31,9 @@ export default function Login({ status, canResetPassword }: Props) {
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="username">Username</Label>
+                                <Label htmlFor="username">
+                                    {t('Username')}
+                                </Label>
                                 <Input
                                     id="username"
                                     type="text"
@@ -38,21 +42,23 @@ export default function Login({ status, canResetPassword }: Props) {
                                     autoFocus
                                     tabIndex={1}
                                     autoComplete="username"
-                                    placeholder="Your username"
+                                    placeholder={t('Your username')}
                                 />
                                 <InputError message={errors.username} />
                             </div>
 
                             <div className="grid gap-2">
                                 <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
+                                    <Label htmlFor="password">
+                                        {t('Password')}
+                                    </Label>
                                     {canResetPassword && (
                                         <TextLink
                                             href={request()}
                                             className="ml-auto text-sm"
                                             tabIndex={5}
                                         >
-                                            Forgot your password?
+                                            {t('Forgot your password?')}
                                         </TextLink>
                                     )}
                                 </div>
@@ -62,7 +68,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                     required
                                     tabIndex={2}
                                     autoComplete="current-password"
-                                    placeholder="Password"
+                                    placeholder={t('Password')}
                                 />
                                 <InputError message={errors.password} />
                             </div>
@@ -73,7 +79,9 @@ export default function Login({ status, canResetPassword }: Props) {
                                     name="remember"
                                     tabIndex={3}
                                 />
-                                <Label htmlFor="remember">Remember me</Label>
+                                <Label htmlFor="remember">
+                                    {t('Remember me')}
+                                </Label>
                             </div>
 
                             <Button
@@ -84,7 +92,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                 data-test="login-button"
                             >
                                 {processing && <Spinner />}
-                                Log in
+                                {t('Log in')}
                             </Button>
                         </div>
                     </>

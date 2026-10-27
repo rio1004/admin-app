@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { Plus, Users } from 'lucide-react';
 import { useState } from 'react';
@@ -46,6 +47,7 @@ export default function UsersIndex({
     filters,
     canCreate,
 }: Props) {
+    const t = useTranslation();
     const search = useForm({
         search: filters.search ?? '',
         role_id: filters.role_id ? String(filters.role_id) : '',
@@ -61,17 +63,19 @@ export default function UsersIndex({
     const filtered = !!filters.search || !!filters.role_id;
     return (
         <>
-            <Head title="Users" />
+            <Head title={t('Users')} />
             <PageContainer>
                 <PageHeading
-                    title="Users"
-                    description="The people behind your workspace. Manage accounts and keep access intentional."
+                    title={t('Users')}
+                    description={t(
+                        'The people behind your workspace. Manage accounts and keep access intentional.',
+                    )}
                     actions={
                         canCreate && (
                             <Button asChild>
                                 <Link href={create()}>
                                     <Plus aria-hidden="true" />
-                                    Create user
+                                    {t('Create user')}
                                 </Link>
                             </Button>
                         )
@@ -92,7 +96,7 @@ export default function UsersIndex({
                         >
                             <div className="min-w-40 flex-1">
                                 <Label htmlFor="user-search">
-                                    Search users
+                                    {t('Search users')}
                                 </Label>
                                 <Input
                                     id="user-search"
@@ -104,12 +108,16 @@ export default function UsersIndex({
                                         )
                                     }
                                     className="mt-2"
-                                    placeholder="Search name, username, or email"
+                                    placeholder={t(
+                                        'Search name, username, or email',
+                                    )}
                                 />
                                 <InputError message={search.errors.search} />
                             </div>
                             <div className="max-w-full min-w-36">
-                                <Label htmlFor="user-role-filter">Role</Label>
+                                <Label htmlFor="user-role-filter">
+                                    {t('Role')}
+                                </Label>
                                 <select
                                     id="user-role-filter"
                                     className="mt-2 block h-9 w-full rounded-md border bg-background px-3 text-sm"
@@ -121,7 +129,7 @@ export default function UsersIndex({
                                         )
                                     }
                                 >
-                                    <option value="">All roles</option>
+                                    <option value="">{t('All roles')}</option>
                                     {roles.map((role) => (
                                         <option key={role.id} value={role.id}>
                                             {role.name}
@@ -131,7 +139,9 @@ export default function UsersIndex({
                                 <InputError message={search.errors.role_id} />
                             </div>
                             <div>
-                                <Label htmlFor="user-sort">Sort by</Label>
+                                <Label htmlFor="user-sort">
+                                    {t('Sort by')}
+                                </Label>
                                 <select
                                     id="user-sort"
                                     className="mt-2 block h-9 rounded-md border bg-background px-3 text-sm"
@@ -143,17 +153,21 @@ export default function UsersIndex({
                                         )
                                     }
                                 >
-                                    <option value="name">Name</option>
-                                    <option value="username">Username</option>
-                                    <option value="email">Email</option>
+                                    <option value="name">{t('Name')}</option>
+                                    <option value="username">
+                                        {t('Username')}
+                                    </option>
+                                    <option value="email">{t('Email')}</option>
                                     <option value="created_at">
-                                        Created date
+                                        {t('Created date')}
                                     </option>
                                 </select>
                                 <InputError message={search.errors.sort} />
                             </div>
                             <div>
-                                <Label htmlFor="user-direction">Order</Label>
+                                <Label htmlFor="user-direction">
+                                    {t('Order')}
+                                </Label>
                                 <select
                                     id="user-direction"
                                     className="mt-2 block h-9 rounded-md border bg-background px-3 text-sm"
@@ -165,8 +179,12 @@ export default function UsersIndex({
                                         )
                                     }
                                 >
-                                    <option value="asc">Ascending</option>
-                                    <option value="desc">Descending</option>
+                                    <option value="asc">
+                                        {t('Ascending')}
+                                    </option>
+                                    <option value="desc">
+                                        {t('Descending')}
+                                    </option>
                                 </select>
                                 <InputError message={search.errors.direction} />
                             </div>
@@ -175,7 +193,9 @@ export default function UsersIndex({
                                 variant="outline"
                                 disabled={search.processing}
                             >
-                                {search.processing ? 'Searching...' : 'Apply'}
+                                {search.processing
+                                    ? t('Searching...')
+                                    : t('Apply')}
                             </Button>
                             <Button
                                 type="button"
@@ -183,7 +203,7 @@ export default function UsersIndex({
                                 disabled={search.processing}
                                 onClick={() => router.get(index.url())}
                             >
-                                Reset
+                                {t('Reset')}
                             </Button>
                         </form>
                         {users.data.length === 0 ? (
@@ -191,21 +211,26 @@ export default function UsersIndex({
                                 icon={Users}
                                 title={
                                     filtered
-                                        ? 'No matching users'
-                                        : 'Your team starts here'
+                                        ? t('No matching users')
+                                        : t('Your team starts here')
                                 }
                                 description={
                                     filtered
-                                        ? 'Try another name, username, email, or role, or reset your filters.'
-                                        : 'Create an account to add someone to your workspace.'
+                                        ? t(
+                                              'Try another name, username, email, or role, or reset your filters.',
+                                          )
+                                        : t(
+                                              'Create an account to add someone to your workspace.',
+                                          )
                                 }
                             />
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-sm">
                                     <caption className="sr-only">
-                                        Users, role assignments and available
-                                        actions
+                                        {t(
+                                            'Users, role assignments and available actions',
+                                        )}
                                     </caption>
                                     <thead className="border-b text-muted-foreground">
                                         <tr>
@@ -213,31 +238,31 @@ export default function UsersIndex({
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Name
+                                                {t('Name')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Username
+                                                {t('Username')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Email
+                                                {t('Email')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Roles
+                                                {t('Roles')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 text-right font-medium"
                                             >
-                                                Actions
+                                                {t('Actions')}
                                             </th>
                                         </tr>
                                     </thead>
@@ -254,7 +279,7 @@ export default function UsersIndex({
                                                         </span>
                                                         {user.is_self && (
                                                             <Badge variant="outline">
-                                                                You
+                                                                {t('You')}
                                                             </Badge>
                                                         )}
                                                     </div>
@@ -284,7 +309,7 @@ export default function UsersIndex({
                                                             )
                                                         ) : (
                                                             <span className="text-xs text-muted-foreground">
-                                                                No roles
+                                                                {t('No roles')}
                                                             </span>
                                                         )}
                                                     </div>
@@ -301,9 +326,14 @@ export default function UsersIndex({
                                                                     href={edit(
                                                                         user.id,
                                                                     )}
-                                                                    aria-label={`Edit ${user.name}`}
+                                                                    aria-label={t(
+                                                                        'Edit {name}',
+                                                                        {
+                                                                            name: user.name,
+                                                                        },
+                                                                    )}
                                                                 >
-                                                                    Edit
+                                                                    {t('Edit')}
                                                                 </Link>
                                                             </Button>
                                                         )}
@@ -317,16 +347,23 @@ export default function UsersIndex({
                                                                         user,
                                                                     );
                                                                 }}
-                                                                aria-label={`Delete ${user.name}`}
+                                                                aria-label={t(
+                                                                    'Delete {name}',
+                                                                    {
+                                                                        name: user.name,
+                                                                    },
+                                                                )}
                                                             >
-                                                                Delete
+                                                                {t('Delete')}
                                                             </Button>
                                                         )}
                                                         {!user.can.update &&
                                                             !user.can
                                                                 .delete && (
                                                                 <span className="text-xs whitespace-nowrap text-muted-foreground">
-                                                                    View only
+                                                                    {t(
+                                                                        'View only',
+                                                                    )}
                                                                 </span>
                                                             )}
                                                     </div>
@@ -338,12 +375,12 @@ export default function UsersIndex({
                             </div>
                         )}
                         <nav
-                            aria-label="User pagination"
+                            aria-label={t('User pagination')}
                             className="flex flex-wrap items-center justify-between gap-3 border-t pt-4"
                         >
                             <p className="text-sm text-muted-foreground">
-                                Page {users.current_page} of {users.last_page} ·{' '}
-                                {users.total} users
+                                {t('Page')} {users.current_page} {t('of')}{' '}
+                                {users.last_page} · {users.total} {t('users')}
                             </p>
                             <div className="flex gap-2">
                                 {users.prev_page_url ? (
@@ -352,7 +389,7 @@ export default function UsersIndex({
                                             href={users.prev_page_url}
                                             preserveScroll
                                         >
-                                            Previous
+                                            {t('Previous')}
                                         </Link>
                                     </Button>
                                 ) : (
@@ -361,7 +398,7 @@ export default function UsersIndex({
                                         size="sm"
                                         disabled
                                     >
-                                        Previous
+                                        {t('Previous')}
                                     </Button>
                                 )}
                                 {users.next_page_url ? (
@@ -370,7 +407,7 @@ export default function UsersIndex({
                                             href={users.next_page_url}
                                             preserveScroll
                                         >
-                                            Next
+                                            {t('Next')}
                                         </Link>
                                     </Button>
                                 ) : (
@@ -379,7 +416,7 @@ export default function UsersIndex({
                                         size="sm"
                                         disabled
                                     >
-                                        Next
+                                        {t('Next')}
                                     </Button>
                                 )}
                             </div>
@@ -394,12 +431,13 @@ export default function UsersIndex({
                 >
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Delete {selected?.name}?</DialogTitle>
+                            <DialogTitle>
+                                {t('Delete')} {selected?.name}?
+                            </DialogTitle>
                             <DialogDescription>
-                                This permanently deletes the account and its
-                                role assignments. You cannot delete your own
-                                account from user management, or remove the
-                                final administrator.
+                                {t(
+                                    'This permanently deletes the account and its role assignments. You cannot delete your own account from user management, or remove the final administrator.',
+                                )}
                             </DialogDescription>
                         </DialogHeader>
                         <InputError
@@ -416,7 +454,7 @@ export default function UsersIndex({
                                 disabled={deletion.processing}
                                 onClick={() => setSelected(null)}
                             >
-                                Cancel
+                                {t('Cancel')}
                             </Button>
                             <Button
                                 variant="destructive"
@@ -434,8 +472,8 @@ export default function UsersIndex({
                                 }}
                             >
                                 {deletion.processing
-                                    ? 'Deleting...'
-                                    : 'Delete user'}
+                                    ? t('Deleting...')
+                                    : t('Delete user')}
                             </Button>
                         </DialogFooter>
                     </DialogContent>

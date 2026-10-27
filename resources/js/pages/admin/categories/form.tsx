@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { PageContainer } from '@/components/admin/page-container';
 import { PageHeading } from '@/components/admin/page-heading';
@@ -15,16 +16,23 @@ type Props = {
 };
 
 export default function CategoryForm({ category, canViewCategories }: Props) {
+    const t = useTranslation();
     const form = useForm({ name: category?.name ?? '' });
     return (
         <>
-            <Head title={category ? 'Edit category' : 'Create category'} />
+            <Head
+                title={category ? t('Edit category') : t('Create category')}
+            />
             <PageContainer>
                 <PageHeading
                     title={
-                        category ? `Edit ${category.name}` : 'Create category'
+                        category
+                            ? t('Edit {name}', { name: category.name })
+                            : t('Create category')
                     }
-                    description="Keep your content organized with clear, reusable categories."
+                    description={t(
+                        'Keep your content organized with clear, reusable categories.',
+                    )}
                 />
                 <Card className="min-w-0 shadow-none">
                     <CardContent>
@@ -45,7 +53,7 @@ export default function CategoryForm({ category, canViewCategories }: Props) {
                         >
                             <div className="max-w-xl space-y-2">
                                 <Label htmlFor="category-name">
-                                    Category name
+                                    {t('Category name')}
                                 </Label>
                                 <Input
                                     id="category-name"
@@ -66,8 +74,9 @@ export default function CategoryForm({ category, canViewCategories }: Props) {
                                     id="category-name-help"
                                     className="text-xs text-muted-foreground"
                                 >
-                                    Up to 120 characters. Categories may share a
-                                    name; each gets a unique slug.
+                                    {t(
+                                        'Up to 120 characters. Categories may share a name; each gets a unique slug.',
+                                    )}
                                 </p>
                                 <InputError
                                     id="category-name-error"
@@ -75,12 +84,14 @@ export default function CategoryForm({ category, canViewCategories }: Props) {
                                 />
                             </div>
                             <div className="max-w-xl space-y-2">
-                                <Label htmlFor="category-slug">Slug</Label>
+                                <Label htmlFor="category-slug">
+                                    {t('Slug')}
+                                </Label>
                                 <Input
                                     id="category-slug"
                                     readOnly
                                     value={category?.slug ?? ''}
-                                    placeholder="Generated when you save"
+                                    placeholder={t('Generated when you save')}
                                     aria-describedby="category-slug-help"
                                     className="bg-muted/50 font-mono text-sm"
                                 />
@@ -88,18 +99,18 @@ export default function CategoryForm({ category, canViewCategories }: Props) {
                                     id="category-slug-help"
                                     className="text-sm leading-6 text-muted-foreground"
                                 >
-                                    Generated automatically on creation. The
-                                    slug stays the same when you rename this
-                                    category.
+                                    {t(
+                                        'Generated automatically on creation. The slug stays the same when you rename this category.',
+                                    )}
                                 </p>
                             </div>
                             <div className="flex flex-wrap items-center gap-3 border-t pt-5">
                                 <Button disabled={form.processing}>
                                     {form.processing
-                                        ? 'Saving...'
+                                        ? t('Saving...')
                                         : category
-                                          ? 'Save changes'
-                                          : 'Create category'}
+                                          ? t('Save changes')
+                                          : t('Create category')}
                                 </Button>
                                 <Button variant="outline" asChild>
                                     <Link
@@ -109,7 +120,7 @@ export default function CategoryForm({ category, canViewCategories }: Props) {
                                                 : profileEdit()
                                         }
                                     >
-                                        Cancel
+                                        {t('Cancel')}
                                     </Link>
                                 </Button>
                                 {form.recentlySuccessful && (
@@ -117,7 +128,7 @@ export default function CategoryForm({ category, canViewCategories }: Props) {
                                         role="status"
                                         className="text-sm text-muted-foreground"
                                     >
-                                        Category saved.
+                                        {t('Category saved.')}
                                     </p>
                                 )}
                             </div>

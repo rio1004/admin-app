@@ -40,3 +40,9 @@ User CRUD always blocks self-deletion. The existing profile self-deletion flow r
 ## Username login
 
 Run `php artisan migrate` and rebuild assets with `npm run build`. Login uses a unique username and password; email remains required for password resets. Existing usernames are generated from display names in ID order, using lowercase letters, numbers, and underscores. Empty names use `user`; collisions receive `_2`, `_3`, and so on. Usernames stay unchanged when display names change. Admin user forms allow setting usernames (up to 100 lowercase letters, numbers, underscores or hyphens). The `admin:make --create` flow also prompts for a username.
+
+## Display language
+
+The header and login screen offer English and Simplified Chinese. Switching updates interface labels immediately and preserves open form data. A one-year, same-site `locale` cookie remembers the choice for this browser. Laravel accepts only `en` and `zh_CN`, defaults to English for other values, and uses Chinese authentication and validation messages for Chinese requests. This preference does not change permissions or stored names and content.
+
+Interface translations live in `resources/js/locales/zh-CN.json`; server messages live in `lang/zh_CN`. Rebuild frontend assets after updating translations. No additional database migration is required for language preferences.

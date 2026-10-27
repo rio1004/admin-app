@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { Folders, Plus } from 'lucide-react';
 import { useState } from 'react';
@@ -43,6 +44,7 @@ export default function CategoriesIndex({
     filters,
     canCreate,
 }: Props) {
+    const t = useTranslation();
     const search = useForm({
         search: filters.search ?? '',
         sort: filters.sort ?? 'name',
@@ -53,17 +55,19 @@ export default function CategoriesIndex({
     const { errors } = usePage().props;
     return (
         <>
-            <Head title="Categories" />
+            <Head title={t('Categories')} />
             <PageContainer>
                 <PageHeading
-                    title="Categories"
-                    description="A place for everything. Organize your content into simple collections."
+                    title={t('Categories')}
+                    description={t(
+                        'A place for everything. Organize your content into simple collections.',
+                    )}
                     actions={
                         canCreate && (
                             <Button asChild>
                                 <Link href={create()}>
                                     <Plus aria-hidden="true" />
-                                    Create category
+                                    {t('Create category')}
                                 </Link>
                             </Button>
                         )
@@ -84,7 +88,7 @@ export default function CategoriesIndex({
                         >
                             <div className="min-w-40 flex-1">
                                 <Label htmlFor="category-search">
-                                    Search categories
+                                    {t('Search categories')}
                                 </Label>
                                 <Input
                                     id="category-search"
@@ -96,12 +100,14 @@ export default function CategoriesIndex({
                                         )
                                     }
                                     className="mt-2"
-                                    placeholder="Search name or slug"
+                                    placeholder={t('Search name or slug')}
                                 />
                                 <InputError message={search.errors.search} />
                             </div>
                             <div>
-                                <Label htmlFor="category-sort">Sort by</Label>
+                                <Label htmlFor="category-sort">
+                                    {t('Sort by')}
+                                </Label>
                                 <select
                                     id="category-sort"
                                     className="mt-2 block h-9 rounded-md border bg-background px-3 text-sm"
@@ -113,17 +119,17 @@ export default function CategoriesIndex({
                                         )
                                     }
                                 >
-                                    <option value="name">Name</option>
-                                    <option value="slug">Slug</option>
+                                    <option value="name">{t('Name')}</option>
+                                    <option value="slug">{t('Slug')}</option>
                                     <option value="created_at">
-                                        Created date
+                                        {t('Created date')}
                                     </option>
                                 </select>
                                 <InputError message={search.errors.sort} />
                             </div>
                             <div>
                                 <Label htmlFor="category-direction">
-                                    Order
+                                    {t('Order')}
                                 </Label>
                                 <select
                                     id="category-direction"
@@ -136,8 +142,12 @@ export default function CategoriesIndex({
                                         )
                                     }
                                 >
-                                    <option value="asc">Ascending</option>
-                                    <option value="desc">Descending</option>
+                                    <option value="asc">
+                                        {t('Ascending')}
+                                    </option>
+                                    <option value="desc">
+                                        {t('Descending')}
+                                    </option>
                                 </select>
                                 <InputError message={search.errors.direction} />
                             </div>
@@ -146,7 +156,9 @@ export default function CategoriesIndex({
                                 variant="outline"
                                 disabled={search.processing}
                             >
-                                {search.processing ? 'Searching...' : 'Apply'}
+                                {search.processing
+                                    ? t('Searching...')
+                                    : t('Apply')}
                             </Button>
                             <Button
                                 type="button"
@@ -154,7 +166,7 @@ export default function CategoriesIndex({
                                 disabled={search.processing}
                                 onClick={() => router.get(index.url())}
                             >
-                                Reset
+                                {t('Reset')}
                             </Button>
                         </form>
                         <InputError message={errors.category} />
@@ -163,13 +175,17 @@ export default function CategoriesIndex({
                                 icon={Folders}
                                 title={
                                     filters.search
-                                        ? 'No matching categories'
-                                        : 'Your categories start here'
+                                        ? t('No matching categories')
+                                        : t('Your categories start here')
                                 }
                                 description={
                                     filters.search
-                                        ? 'Try a different name or slug, or reset your search.'
-                                        : 'Create your first category to start organizing your content.'
+                                        ? t(
+                                              'Try a different name or slug, or reset your search.',
+                                          )
+                                        : t(
+                                              'Create your first category to start organizing your content.',
+                                          )
                                 }
                                 actions={
                                     canCreate &&
@@ -177,7 +193,7 @@ export default function CategoriesIndex({
                                         <Button asChild>
                                             <Link href={create()}>
                                                 <Plus aria-hidden="true" />
-                                                Create category
+                                                {t('Create category')}
                                             </Link>
                                         </Button>
                                     )
@@ -187,8 +203,9 @@ export default function CategoriesIndex({
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-sm">
                                     <caption className="sr-only">
-                                        Categories, unique slugs and available
-                                        actions
+                                        {t(
+                                            'Categories, unique slugs and available actions',
+                                        )}
                                     </caption>
                                     <thead className="border-b text-muted-foreground">
                                         <tr>
@@ -196,19 +213,19 @@ export default function CategoriesIndex({
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Category
+                                                {t('Category')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Slug
+                                                {t('Slug')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 text-right font-medium"
                                             >
-                                                Actions
+                                                {t('Actions')}
                                             </th>
                                         </tr>
                                     </thead>
@@ -247,9 +264,14 @@ export default function CategoriesIndex({
                                                                     href={edit(
                                                                         category.id,
                                                                     )}
-                                                                    aria-label={`Edit ${category.name}`}
+                                                                    aria-label={t(
+                                                                        'Edit {name}',
+                                                                        {
+                                                                            name: category.name,
+                                                                        },
+                                                                    )}
                                                                 >
-                                                                    Edit
+                                                                    {t('Edit')}
                                                                 </Link>
                                                             </Button>
                                                         )}
@@ -264,16 +286,23 @@ export default function CategoriesIndex({
                                                                         category,
                                                                     );
                                                                 }}
-                                                                aria-label={`Delete ${category.name}`}
+                                                                aria-label={t(
+                                                                    'Delete {name}',
+                                                                    {
+                                                                        name: category.name,
+                                                                    },
+                                                                )}
                                                             >
-                                                                Delete
+                                                                {t('Delete')}
                                                             </Button>
                                                         )}
                                                         {!category.can.update &&
                                                             !category.can
                                                                 .delete && (
                                                                 <span className="text-xs whitespace-nowrap text-muted-foreground">
-                                                                    View only
+                                                                    {t(
+                                                                        'View only',
+                                                                    )}
                                                                 </span>
                                                             )}
                                                     </div>
@@ -285,13 +314,13 @@ export default function CategoriesIndex({
                             </div>
                         )}
                         <nav
-                            aria-label="Category pagination"
+                            aria-label={t('Category pagination')}
                             className="flex flex-wrap items-center justify-between gap-3 border-t pt-4"
                         >
                             <p className="text-sm text-muted-foreground">
-                                Page {categories.current_page} of{' '}
+                                {t('Page')} {categories.current_page} {t('of')}{' '}
                                 {categories.last_page} · {categories.total}{' '}
-                                categories
+                                {t('categories')}
                             </p>
                             <div className="flex gap-2">
                                 {categories.prev_page_url ? (
@@ -300,7 +329,7 @@ export default function CategoriesIndex({
                                             href={categories.prev_page_url}
                                             preserveScroll
                                         >
-                                            Previous
+                                            {t('Previous')}
                                         </Link>
                                     </Button>
                                 ) : (
@@ -309,7 +338,7 @@ export default function CategoriesIndex({
                                         size="sm"
                                         disabled
                                     >
-                                        Previous
+                                        {t('Previous')}
                                     </Button>
                                 )}
                                 {categories.next_page_url ? (
@@ -318,7 +347,7 @@ export default function CategoriesIndex({
                                             href={categories.next_page_url}
                                             preserveScroll
                                         >
-                                            Next
+                                            {t('Next')}
                                         </Link>
                                     </Button>
                                 ) : (
@@ -327,7 +356,7 @@ export default function CategoriesIndex({
                                         size="sm"
                                         disabled
                                     >
-                                        Next
+                                        {t('Next')}
                                     </Button>
                                 )}
                             </div>
@@ -342,12 +371,13 @@ export default function CategoriesIndex({
                 >
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Delete {selected?.name}?</DialogTitle>
+                            <DialogTitle>
+                                {t('Delete')} {selected?.name}?
+                            </DialogTitle>
                             <DialogDescription>
-                                This permanently removes the category and cannot
-                                be undone. Categories containing items must be
-                                kept until their items are reassigned or
-                                deleted.
+                                {t(
+                                    'This permanently removes the category and cannot be undone. Categories containing items must be kept until their items are reassigned or deleted.',
+                                )}
                             </DialogDescription>
                         </DialogHeader>
                         <InputError
@@ -362,7 +392,7 @@ export default function CategoriesIndex({
                                 disabled={deletion.processing}
                                 onClick={() => setSelected(null)}
                             >
-                                Cancel
+                                {t('Cancel')}
                             </Button>
                             <Button
                                 variant="destructive"
@@ -380,8 +410,8 @@ export default function CategoriesIndex({
                                 }}
                             >
                                 {deletion.processing
-                                    ? 'Deleting...'
-                                    : 'Delete category'}
+                                    ? t('Deleting...')
+                                    : t('Delete category')}
                             </Button>
                         </DialogFooter>
                     </DialogContent>

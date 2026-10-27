@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { PageContainer } from '@/components/admin/page-container';
 import { PageHeading } from '@/components/admin/page-heading';
@@ -28,6 +29,7 @@ export default function UserForm({
     canViewUsers,
     passwordRules,
 }: Props) {
+    const t = useTranslation();
     const form = useForm({
         name: user?.name ?? '',
         username: user?.username ?? '',
@@ -38,11 +40,17 @@ export default function UserForm({
     });
     return (
         <>
-            <Head title={user ? 'Edit user' : 'Create user'} />
+            <Head title={user ? t('Edit user') : t('Create user')} />
             <PageContainer>
                 <PageHeading
-                    title={user ? `Edit ${user.name}` : 'Create user'}
-                    description="Manage account details and access using your team's defined roles."
+                    title={
+                        user
+                            ? t('Edit {name}', { name: user.name })
+                            : t('Create user')
+                    }
+                    description={t(
+                        "Manage account details and access using your team's defined roles.",
+                    )}
                 />
                 <Card className="min-w-0 shadow-none">
                     <CardContent>
@@ -87,7 +95,9 @@ export default function UserForm({
                             <div className="grid gap-7 lg:grid-cols-2">
                                 <div className="space-y-6">
                                     <div className="space-y-2">
-                                        <Label htmlFor="user-name">Name</Label>
+                                        <Label htmlFor="user-name">
+                                            {t('Name')}
+                                        </Label>
                                         <Input
                                             id="user-name"
                                             required
@@ -112,7 +122,7 @@ export default function UserForm({
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="user-username">
-                                            Username
+                                            {t('Username')}
                                         </Label>
                                         <Input
                                             id="user-username"
@@ -139,7 +149,7 @@ export default function UserForm({
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="user-email">
-                                            Email
+                                            {t('Email')}
                                         </Label>
                                         <Input
                                             id="user-email"
@@ -166,8 +176,8 @@ export default function UserForm({
                                     <div className="space-y-2">
                                         <Label htmlFor="user-password">
                                             {user
-                                                ? 'New password (optional)'
-                                                : 'Password'}
+                                                ? t('New password (optional)')
+                                                : t('Password')}
                                         </Label>
                                         <PasswordInput
                                             id="user-password"
@@ -192,8 +202,12 @@ export default function UserForm({
                                             className="text-xs leading-5 text-muted-foreground"
                                         >
                                             {user
-                                                ? 'Leave blank to keep the current password.'
-                                                : 'Set an initial password using the application password requirements.'}
+                                                ? t(
+                                                      'Leave blank to keep the current password.',
+                                                  )
+                                                : t(
+                                                      'Set an initial password using the application password requirements.',
+                                                  )}
                                         </p>
                                         <InputError
                                             id="user-password-error"
@@ -202,7 +216,7 @@ export default function UserForm({
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="user-password-confirmation">
-                                            Confirm password
+                                            {t('Confirm password')}
                                         </Label>
                                         <PasswordInput
                                             id="user-password-confirmation"
@@ -223,13 +237,12 @@ export default function UserForm({
                                 </div>
                                 <div className="space-y-4 rounded-xl border bg-muted/20 p-5">
                                     <h2 className="font-semibold">
-                                        Role assignments
+                                        {t('Role assignments')}
                                     </h2>
                                     <p className="text-sm leading-6 text-muted-foreground">
-                                        Role changes require roles.update. Only
-                                        roles within your authority can be
-                                        assigned. The final administrator must
-                                        keep the Admin role.
+                                        {t(
+                                            'Role changes require roles.update. Only roles within your authority can be assigned. The final administrator must keep the Admin role.',
+                                        )}
                                     </p>
                                     {canAssignRoles ? (
                                         <fieldset
@@ -237,11 +250,13 @@ export default function UserForm({
                                             className="space-y-4"
                                         >
                                             <legend className="sr-only">
-                                                Select user roles
+                                                {t('Select user roles')}
                                             </legend>
                                             {roles.length === 0 && (
                                                 <p className="text-sm text-muted-foreground">
-                                                    No roles are available.
+                                                    {t(
+                                                        'No roles are available.',
+                                                    )}
                                                 </p>
                                             )}
                                             {roles.map((role) => (
@@ -290,7 +305,9 @@ export default function UserForm({
                                                         {role.name}
                                                         {!role.grantable && (
                                                             <span className="ml-2 text-xs">
-                                                                Unavailable
+                                                                {t(
+                                                                    'Unavailable',
+                                                                )}
                                                             </span>
                                                         )}
                                                     </Label>
@@ -300,9 +317,9 @@ export default function UserForm({
                                     ) : (
                                         <>
                                             <p className="text-sm text-muted-foreground">
-                                                You can edit account details,
-                                                but cannot change role
-                                                assignments.
+                                                {t(
+                                                    'You can edit account details, but cannot change role assignments.',
+                                                )}
                                             </p>
                                             <div className="flex flex-wrap gap-2">
                                                 {user?.roles.length ? (
@@ -316,7 +333,7 @@ export default function UserForm({
                                                     ))
                                                 ) : (
                                                     <span className="text-sm text-muted-foreground">
-                                                        No roles assigned
+                                                        {t('No roles assigned')}
                                                     </span>
                                                 )}
                                             </div>
@@ -338,10 +355,10 @@ export default function UserForm({
                             <div className="flex flex-wrap items-center gap-3 border-t pt-5">
                                 <Button disabled={form.processing}>
                                     {form.processing
-                                        ? 'Saving...'
+                                        ? t('Saving...')
                                         : user
-                                          ? 'Save changes'
-                                          : 'Create user'}
+                                          ? t('Save changes')
+                                          : t('Create user')}
                                 </Button>
                                 <Button variant="outline" asChild>
                                     <Link
@@ -351,7 +368,7 @@ export default function UserForm({
                                                 : profileEdit()
                                         }
                                     >
-                                        Cancel
+                                        {t('Cancel')}
                                     </Link>
                                 </Button>
                                 {form.recentlySuccessful && (
@@ -359,7 +376,7 @@ export default function UserForm({
                                         role="status"
                                         className="text-sm text-muted-foreground"
                                     >
-                                        User saved.
+                                        {t('User saved.')}
                                     </p>
                                 )}
                             </div>

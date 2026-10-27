@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -22,6 +23,7 @@ export function SummaryCard({
     tone?: keyof typeof tones;
     caption: string;
 }) {
+    const t = useTranslation();
     return (
         <Card className={cn('border-0 shadow-none', tones[tone])}>
             <CardContent>
@@ -29,7 +31,7 @@ export function SummaryCard({
                     <span className="flex size-11 items-center justify-center rounded-xl bg-white/70 dark:bg-white/10">
                         <Icon className="size-5" aria-hidden="true" />
                     </span>
-                    <span className="text-xs font-medium">Total</span>
+                    <span className="text-xs font-medium">{t('Total')}</span>
                 </div>
                 <p className="text-sm font-medium">{title}</p>
                 <p className="mt-1 text-3xl font-semibold tracking-tight">

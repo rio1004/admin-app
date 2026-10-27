@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { PageContainer } from '@/components/admin/page-container';
 import { PageHeading } from '@/components/admin/page-heading';
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export default function RoleForm({ role, permissions, canViewRoles }: Props) {
+    const t = useTranslation();
     const form = useForm({
         name: role?.name ?? '',
         permissions: role?.permissions ?? [],
@@ -28,11 +30,17 @@ export default function RoleForm({ role, permissions, canViewRoles }: Props) {
     ];
     return (
         <>
-            <Head title={role ? 'Edit role' : 'Create role'} />
+            <Head title={role ? t('Edit role') : t('Create role')} />
             <PageContainer>
                 <PageHeading
-                    title={role ? `Edit ${role.name}` : 'Create role'}
-                    description="Choose a name and select the permissions this role should grant. You can only manage permissions you hold."
+                    title={
+                        role
+                            ? t('Edit {name}', { name: role.name })
+                            : t('Create role')
+                    }
+                    description={t(
+                        'Choose a name and select the permissions this role should grant. You can only manage permissions you hold.',
+                    )}
                 />
                 <Card className="min-w-0 shadow-none">
                     <CardContent>
@@ -49,7 +57,9 @@ export default function RoleForm({ role, permissions, canViewRoles }: Props) {
                             }}
                         >
                             <div className="max-w-lg space-y-2">
-                                <Label htmlFor="role-name">Role name</Label>
+                                <Label htmlFor="role-name">
+                                    {t('Role name')}
+                                </Label>
                                 <Input
                                     id="role-name"
                                     name="name"
@@ -75,13 +85,12 @@ export default function RoleForm({ role, permissions, canViewRoles }: Props) {
                             </div>
                             <div>
                                 <h2 className="mb-2 font-semibold">
-                                    Permissions
+                                    {t('Permissions')}
                                 </h2>
                                 <p className="mb-5 text-sm text-muted-foreground">
-                                    Admin access opens the workspace. Each
-                                    resource also needs its own action
-                                    permissions. Unavailable permissions are
-                                    disabled.
+                                    {t(
+                                        'Admin access opens the workspace. Each resource also needs its own action permissions. Unavailable permissions are disabled.',
+                                    )}
                                 </p>
                                 <InputError message={form.errors.permissions} />
                                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -167,10 +176,10 @@ export default function RoleForm({ role, permissions, canViewRoles }: Props) {
                             <div className="flex flex-wrap items-center gap-3 border-t pt-5">
                                 <Button disabled={form.processing}>
                                     {form.processing
-                                        ? 'Saving...'
+                                        ? t('Saving...')
                                         : role
-                                          ? 'Save changes'
-                                          : 'Create role'}
+                                          ? t('Save changes')
+                                          : t('Create role')}
                                 </Button>
                                 <Button variant="outline" asChild>
                                     <Link
@@ -180,7 +189,7 @@ export default function RoleForm({ role, permissions, canViewRoles }: Props) {
                                                 : profileEdit()
                                         }
                                     >
-                                        Cancel
+                                        {t('Cancel')}
                                     </Link>
                                 </Button>
                                 {form.recentlySuccessful && (
@@ -188,7 +197,7 @@ export default function RoleForm({ role, permissions, canViewRoles }: Props) {
                                         role="status"
                                         className="text-sm text-muted-foreground"
                                     >
-                                        Role saved.
+                                        {t('Role saved.')}
                                     </p>
                                 )}
                             </div>

@@ -1,4 +1,5 @@
-﻿import { Head, Link, usePage } from '@inertiajs/react';
+import { useTranslation } from '@/hooks/use-language';
+import { Head, Link, usePage } from '@inertiajs/react';
 import {
     ArrowRight,
     Folders,
@@ -32,20 +33,21 @@ export default function Dashboard({
     recentItems,
     canCreateItem,
 }: Props) {
+    const t = useTranslation();
     const { auth } = usePage().props;
     return (
         <>
-            <Head title="Dashboard" />
+            <Head title={t('Dashboard')} />
             <PageContainer>
                 <PageHeading
-                    title="Dashboard"
-                    description="Your workspace, at a glance."
+                    title={t('Dashboard')}
+                    description={t('Your workspace, at a glance.')}
                     actions={
                         canCreateItem && (
                             <Button asChild>
                                 <Link href={create()}>
                                     <Plus aria-hidden="true" />
-                                    Create item
+                                    {t('Create item')}
                                 </Link>
                             </Button>
                         )
@@ -61,20 +63,21 @@ export default function Dashboard({
                             variant="outline"
                             className="mb-4 border-cyan-200 bg-background/60"
                         >
-                            Your admin workspace
+                            {t('Your admin workspace')}
                         </Badge>
                         <h2 className="text-xl font-semibold tracking-tight break-words sm:text-2xl">
-                            Welcome back, {auth.user.name}.
+                            {t('Welcome back,')} {auth.user.name}.
                         </h2>
                         <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground">
-                            A quick look at your team and collection. Choose a
-                            section to get started.
+                            {t(
+                                'A quick look at your team and collection. Choose a section to get started.',
+                            )}
                         </p>
                     </div>
                 </section>
                 {Object.keys(counts).length > 0 ? (
                     <section
-                        aria-label="Workspace totals"
+                        aria-label={t('Workspace totals')}
                         className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
                     >
                         {counts.users !== undefined && (
@@ -83,11 +86,11 @@ export default function Dashboard({
                                 className="rounded-xl focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
                             >
                                 <SummaryCard
-                                    title="Users"
+                                    title={t('Users')}
                                     value={counts.users}
                                     icon={Users}
                                     tone="blue"
-                                    caption="Registered accounts"
+                                    caption={t('Registered accounts')}
                                 />
                             </Link>
                         )}
@@ -97,11 +100,11 @@ export default function Dashboard({
                                 className="rounded-xl focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
                             >
                                 <SummaryCard
-                                    title="Roles"
+                                    title={t('Roles')}
                                     value={counts.roles}
                                     icon={ShieldCheck}
                                     tone="violet"
-                                    caption="Defined roles"
+                                    caption={t('Defined roles')}
                                 />
                             </Link>
                         )}
@@ -111,11 +114,11 @@ export default function Dashboard({
                                 className="rounded-xl focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
                             >
                                 <SummaryCard
-                                    title="Items"
+                                    title={t('Items')}
                                     value={counts.items}
                                     icon={Package}
                                     tone="cyan"
-                                    caption="Items in your collection"
+                                    caption={t('Items in your collection')}
                                 />
                             </Link>
                         )}
@@ -125,11 +128,11 @@ export default function Dashboard({
                                 className="rounded-xl focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
                             >
                                 <SummaryCard
-                                    title="Categories"
+                                    title={t('Categories')}
                                     value={counts.categories}
                                     icon={Folders}
                                     tone="amber"
-                                    caption="Content categories"
+                                    caption={t('Content categories')}
                                 />
                             </Link>
                         )}
@@ -137,8 +140,10 @@ export default function Dashboard({
                 ) : (
                     <EmptyState
                         icon={ShieldCheck}
-                        title="Your workspace is ready"
-                        description="Ask an administrator to enable the sections you need. Your available sections appear in the sidebar."
+                        title={t('Your workspace is ready')}
+                        description={t(
+                            'Ask an administrator to enable the sections you need. Your available sections appear in the sidebar.',
+                        )}
                     />
                 )}
                 {recentItems !== undefined && (
@@ -147,15 +152,17 @@ export default function Dashboard({
                             <div className="flex flex-wrap items-center justify-between gap-3">
                                 <div>
                                     <CardTitle>
-                                        <h2>Recent items</h2>
+                                        <h2>{t('Recent items')}</h2>
                                     </CardTitle>
                                     <p className="mt-2 text-sm text-muted-foreground">
-                                        The latest additions to your collection.
+                                        {t(
+                                            'The latest additions to your collection.',
+                                        )}
                                     </p>
                                 </div>
                                 <Button variant="outline" size="sm" asChild>
                                     <Link href={itemsIndex()}>
-                                        View all{' '}
+                                        {t('View all')}{' '}
                                         <ArrowRight aria-hidden="true" />
                                     </Link>
                                 </Button>
@@ -165,18 +172,22 @@ export default function Dashboard({
                             {recentItems.length === 0 ? (
                                 <EmptyState
                                     icon={Package}
-                                    title="Your collection starts here"
+                                    title={t('Your collection starts here')}
                                     description={
                                         canCreateItem
-                                            ? 'Add your first item to start building your collection.'
-                                            : 'Items will appear here when your team adds them.'
+                                            ? t(
+                                                  'Add your first item to start building your collection.',
+                                              )
+                                            : t(
+                                                  'Items will appear here when your team adds them.',
+                                              )
                                     }
                                     actions={
                                         canCreateItem && (
                                             <Button asChild>
                                                 <Link href={create()}>
                                                     <Plus aria-hidden="true" />
-                                                    Create item
+                                                    {t('Create item')}
                                                 </Link>
                                             </Button>
                                         )
@@ -186,7 +197,9 @@ export default function Dashboard({
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left text-sm">
                                         <caption className="sr-only">
-                                            The five most recently created items
+                                            {t(
+                                                'The five most recently created items',
+                                            )}
                                         </caption>
                                         <thead className="border-b text-muted-foreground">
                                             <tr>
@@ -194,19 +207,19 @@ export default function Dashboard({
                                                     scope="col"
                                                     className="p-3 font-medium"
                                                 >
-                                                    Item
+                                                    {t('Item')}
                                                 </th>
                                                 <th
                                                     scope="col"
                                                     className="p-3 font-medium"
                                                 >
-                                                    Category
+                                                    {t('Category')}
                                                 </th>
                                                 <th
                                                     scope="col"
                                                     className="p-3 text-right font-medium"
                                                 >
-                                                    Actions
+                                                    {t('Actions')}
                                                 </th>
                                             </tr>
                                         </thead>
@@ -261,9 +274,14 @@ export default function Dashboard({
                                                                     href={show(
                                                                         item.id,
                                                                     )}
-                                                                    aria-label={`View ${item.name}`}
+                                                                    aria-label={t(
+                                                                        'View {name}',
+                                                                        {
+                                                                            name: item.name,
+                                                                        },
+                                                                    )}
                                                                 >
-                                                                    View
+                                                                    {t('View')}
                                                                 </Link>
                                                             </Button>
                                                             {item.can
@@ -277,9 +295,16 @@ export default function Dashboard({
                                                                         href={edit(
                                                                             item.id,
                                                                         )}
-                                                                        aria-label={`Edit ${item.name}`}
+                                                                        aria-label={t(
+                                                                            'Edit {name}',
+                                                                            {
+                                                                                name: item.name,
+                                                                            },
+                                                                        )}
                                                                     >
-                                                                        Edit
+                                                                        {t(
+                                                                            'Edit',
+                                                                        )}
                                                                     </Link>
                                                                 </Button>
                                                             )}

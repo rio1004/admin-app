@@ -12,6 +12,7 @@ test('username migration preserves accounts and resolves duplicate and empty nam
     User::factory()->create(['name' => 'Same Name']);
     User::factory()->create(['name' => '!!!']);
     $before = DB::table('users')->orderBy('id')->get(['id', 'email', 'password']);
+    Schema::table('users', fn (Blueprint $table) => $table->dropUnique(['username']));
     Schema::table('users', fn (Blueprint $table) => $table->dropColumn('username'));
     (require database_path('migrations/2026_10_27_130000_add_username_to_users_table.php'))->up();
     expect(DB::table('users')->orderBy('id')->pluck('username')->all())->toBe(['same_name', 'same_name_2', 'user']);

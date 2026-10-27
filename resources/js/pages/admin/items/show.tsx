@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, ExternalLink, Package } from 'lucide-react';
 import { useState } from 'react';
@@ -11,6 +12,7 @@ import { edit, index } from '@/routes/admin/items';
 import type { Item } from '@/types/item';
 
 export default function ItemShow({ item }: { item: Item }) {
+    const t = useTranslation();
     const [deleting, setDeleting] = useState(false);
     return (
         <>
@@ -18,18 +20,20 @@ export default function ItemShow({ item }: { item: Item }) {
             <PageContainer>
                 <PageHeading
                     title={item.name}
-                    description="Item details"
+                    description={t('Item details')}
                     actions={
                         <div className="flex flex-wrap gap-2">
                             <Button variant="outline" asChild>
                                 <Link href={index()}>
                                     <ArrowLeft aria-hidden="true" />
-                                    Items
+                                    {t('Items')}
                                 </Link>
                             </Button>
                             {item.can.update && (
                                 <Button asChild>
-                                    <Link href={edit(item.id)}>Edit item</Link>
+                                    <Link href={edit(item.id)}>
+                                        {t('Edit item')}
+                                    </Link>
                                 </Button>
                             )}
                             {item.can.delete && (
@@ -37,7 +41,7 @@ export default function ItemShow({ item }: { item: Item }) {
                                     variant="outline"
                                     onClick={() => setDeleting(true)}
                                 >
-                                    Delete
+                                    {t('Delete')}
                                 </Button>
                             )}
                         </div>
@@ -57,7 +61,9 @@ export default function ItemShow({ item }: { item: Item }) {
                                     className="size-10"
                                     aria-hidden="true"
                                 />
-                                <p className="text-sm">No image uploaded</p>
+                                <p className="text-sm">
+                                    {t('No image uploaded')}
+                                </p>
                             </div>
                         )}
                         <div className="space-y-6">
@@ -67,7 +73,7 @@ export default function ItemShow({ item }: { item: Item }) {
                             <dl className="space-y-5">
                                 <div>
                                     <dt className="text-sm text-muted-foreground">
-                                        Name
+                                        {t('Name')}
                                     </dt>
                                     <dd className="mt-1 font-medium break-words">
                                         {item.name}
@@ -75,7 +81,7 @@ export default function ItemShow({ item }: { item: Item }) {
                                 </div>
                                 <div>
                                     <dt className="text-sm text-muted-foreground">
-                                        Slug
+                                        {t('Slug')}
                                     </dt>
                                     <dd className="mt-1 font-mono text-sm break-all">
                                         {item.slug}
@@ -83,7 +89,7 @@ export default function ItemShow({ item }: { item: Item }) {
                                 </div>
                                 <div>
                                     <dt className="text-sm text-muted-foreground">
-                                        Link
+                                        {t('Link')}
                                     </dt>
                                     <dd className="mt-2">
                                         {item.link ? (
@@ -100,12 +106,12 @@ export default function ItemShow({ item }: { item: Item }) {
                                                 />
                                                 <span className="sr-only">
                                                     {' '}
-                                                    (opens in a new tab)
+                                                    {t('(opens in a new tab)')}
                                                 </span>
                                             </a>
                                         ) : (
                                             <span className="text-sm text-muted-foreground">
-                                                No link provided
+                                                {t('No link provided')}
                                             </span>
                                         )}
                                     </dd>

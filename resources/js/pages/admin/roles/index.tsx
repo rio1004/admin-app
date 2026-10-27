@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { Plus, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
@@ -42,6 +43,7 @@ type Props = {
 };
 
 export default function RolesIndex({ roles, filters, canCreate }: Props) {
+    const t = useTranslation();
     const search = useForm({
         search: filters.search ?? '',
         sort: filters.sort ?? 'name',
@@ -53,26 +55,28 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
 
     return (
         <>
-            <Head title="Roles & Permissions" />
+            <Head title={t('Roles & Permissions')} />
             <PageContainer>
                 <PageHeading
-                    title="Roles & Permissions"
-                    description="Define what your team can access. Permissions come from the application's defined set."
+                    title={t('Roles & Permissions')}
+                    description={t(
+                        "Define what your team can access. Permissions come from the application's defined set.",
+                    )}
                     actions={
                         canCreate && (
                             <Button asChild>
                                 <Link href={create()}>
                                     <Plus aria-hidden="true" />
-                                    Create role
+                                    {t('Create role')}
                                 </Link>
                             </Button>
                         )
                     }
                 />
                 <p className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-900 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-200">
-                    The Admin role is protected. Other roles can only grant
-                    permissions you hold. Roles with assigned users must be
-                    reassigned before deletion.
+                    {t(
+                        'The Admin role is protected. Other roles can only grant permissions you hold. Roles with assigned users must be reassigned before deletion.',
+                    )}
                 </p>
                 <Card className="min-w-0 shadow-none">
                     <CardContent className="space-y-6">
@@ -89,7 +93,7 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                         >
                             <div className="min-w-40 flex-1">
                                 <Label htmlFor="role-search">
-                                    Search roles
+                                    {t('Search roles')}
                                 </Label>
                                 <Input
                                     id="role-search"
@@ -101,12 +105,14 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                         )
                                     }
                                     className="mt-2"
-                                    placeholder="Search by name"
+                                    placeholder={t('Search by name')}
                                 />
                                 <InputError message={search.errors.search} />
                             </div>
                             <div>
-                                <Label htmlFor="role-sort">Sort by</Label>
+                                <Label htmlFor="role-sort">
+                                    {t('Sort by')}
+                                </Label>
                                 <select
                                     id="role-sort"
                                     className="mt-2 block h-9 rounded-md border bg-background px-3 text-sm"
@@ -118,15 +124,17 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                         )
                                     }
                                 >
-                                    <option value="name">Name</option>
+                                    <option value="name">{t('Name')}</option>
                                     <option value="created_at">
-                                        Created date
+                                        {t('Created date')}
                                     </option>
                                 </select>
                                 <InputError message={search.errors.sort} />
                             </div>
                             <div>
-                                <Label htmlFor="role-direction">Order</Label>
+                                <Label htmlFor="role-direction">
+                                    {t('Order')}
+                                </Label>
                                 <select
                                     id="role-direction"
                                     className="mt-2 block h-9 rounded-md border bg-background px-3 text-sm"
@@ -138,8 +146,12 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                         )
                                     }
                                 >
-                                    <option value="asc">Ascending</option>
-                                    <option value="desc">Descending</option>
+                                    <option value="asc">
+                                        {t('Ascending')}
+                                    </option>
+                                    <option value="desc">
+                                        {t('Descending')}
+                                    </option>
                                 </select>
                                 <InputError message={search.errors.direction} />
                             </div>
@@ -148,7 +160,9 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                 variant="outline"
                                 disabled={search.processing}
                             >
-                                {search.processing ? 'Filtering...' : 'Apply'}
+                                {search.processing
+                                    ? t('Filtering...')
+                                    : t('Apply')}
                             </Button>
                             <Button
                                 type="button"
@@ -156,22 +170,25 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                 disabled={search.processing}
                                 onClick={() => router.get(index.url())}
                             >
-                                Reset
+                                {t('Reset')}
                             </Button>
                         </form>
                         <InputError message={errors.role} />
                         {roles.data.length === 0 ? (
                             <EmptyState
                                 icon={ShieldCheck}
-                                title="No roles found"
-                                description="Try a different search or create a role to define a new set of permissions."
+                                title={t('No roles found')}
+                                description={t(
+                                    'Try a different search or create a role to define a new set of permissions.',
+                                )}
                             />
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-sm">
                                     <caption className="sr-only">
-                                        Roles, assigned users, permissions and
-                                        available actions
+                                        {t(
+                                            'Roles, assigned users, permissions and available actions',
+                                        )}
                                     </caption>
                                     <thead className="border-b text-muted-foreground">
                                         <tr>
@@ -179,25 +196,25 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Role
+                                                {t('Role')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Users
+                                                {t('Users')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Permissions
+                                                {t('Permissions')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 text-right font-medium"
                                             >
-                                                Actions
+                                                {t('Actions')}
                                             </th>
                                         </tr>
                                     </thead>
@@ -212,7 +229,7 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                                         {role.name}
                                                         {role.protected && (
                                                             <Badge variant="secondary">
-                                                                Protected
+                                                                {t('Protected')}
                                                             </Badge>
                                                         )}
                                                     </div>
@@ -227,7 +244,7 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                                                 role.permissions
                                                                     .length
                                                             }{' '}
-                                                            permissions
+                                                            {t('permissions')}
                                                         </summary>
                                                         <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
                                                             {role.permissions.map(
@@ -260,9 +277,14 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                                                     href={edit(
                                                                         role.id,
                                                                     )}
-                                                                    aria-label={`Edit ${role.name}`}
+                                                                    aria-label={t(
+                                                                        'Edit {name}',
+                                                                        {
+                                                                            name: role.name,
+                                                                        },
+                                                                    )}
                                                                 >
-                                                                    Edit
+                                                                    {t('Edit')}
                                                                 </Link>
                                                             </Button>
                                                         )}
@@ -276,14 +298,21 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                                                         role,
                                                                     );
                                                                 }}
-                                                                aria-label={`Delete ${role.name}`}
+                                                                aria-label={t(
+                                                                    'Delete {name}',
+                                                                    {
+                                                                        name: role.name,
+                                                                    },
+                                                                )}
                                                             >
-                                                                Delete
+                                                                {t('Delete')}
                                                             </Button>
                                                         )}
                                                         {role.protected && (
                                                             <span className="text-xs text-muted-foreground">
-                                                                System managed
+                                                                {t(
+                                                                    'System managed',
+                                                                )}
                                                             </span>
                                                         )}
                                                     </div>
@@ -295,12 +324,12 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                             </div>
                         )}
                         <nav
-                            aria-label="Role pagination"
+                            aria-label={t('Role pagination')}
                             className="flex flex-wrap items-center justify-between gap-3 border-t pt-4"
                         >
                             <p className="text-sm text-muted-foreground">
-                                Page {roles.current_page} of {roles.last_page} ·{' '}
-                                {roles.total} roles
+                                {t('Page')} {roles.current_page} {t('of')}{' '}
+                                {roles.last_page} · {roles.total} {t('roles')}
                             </p>
                             <div className="flex gap-2">
                                 {roles.prev_page_url ? (
@@ -309,7 +338,7 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                             href={roles.prev_page_url}
                                             preserveScroll
                                         >
-                                            Previous
+                                            {t('Previous')}
                                         </Link>
                                     </Button>
                                 ) : (
@@ -318,7 +347,7 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                         size="sm"
                                         disabled
                                     >
-                                        Previous
+                                        {t('Previous')}
                                     </Button>
                                 )}
                                 {roles.next_page_url ? (
@@ -327,7 +356,7 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                             href={roles.next_page_url}
                                             preserveScroll
                                         >
-                                            Next
+                                            {t('Next')}
                                         </Link>
                                     </Button>
                                 ) : (
@@ -336,7 +365,7 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                         size="sm"
                                         disabled
                                     >
-                                        Next
+                                        {t('Next')}
                                     </Button>
                                 )}
                             </div>
@@ -351,10 +380,13 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                 >
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Delete {selected?.name}?</DialogTitle>
+                            <DialogTitle>
+                                {t('Delete')} {selected?.name}?
+                            </DialogTitle>
                             <DialogDescription>
-                                This permanently removes the role. Roles with
-                                assigned users cannot be deleted.
+                                {t(
+                                    'This permanently removes the role. Roles with assigned users cannot be deleted.',
+                                )}
                             </DialogDescription>
                         </DialogHeader>
                         <InputError
@@ -368,7 +400,7 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                 disabled={deletion.processing}
                                 onClick={() => setSelected(null)}
                             >
-                                Cancel
+                                {t('Cancel')}
                             </Button>
                             <Button
                                 variant="destructive"
@@ -386,8 +418,8 @@ export default function RolesIndex({ roles, filters, canCreate }: Props) {
                                 }}
                             >
                                 {deletion.processing
-                                    ? 'Deleting...'
-                                    : 'Delete role'}
+                                    ? t('Deleting...')
+                                    : t('Delete role')}
                             </Button>
                         </DialogFooter>
                     </DialogContent>

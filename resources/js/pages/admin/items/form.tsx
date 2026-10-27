@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Package, Upload } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -28,6 +29,7 @@ export default function ItemForm({
     canViewItems,
     canCreateCategory,
 }: Props) {
+    const t = useTranslation();
     const fileInput = useRef<HTMLInputElement>(null);
     const dragDepth = useRef(0);
     const [isDragging, setIsDragging] = useState(false);
@@ -70,30 +72,39 @@ export default function ItemForm({
     }
     return (
         <>
-            <Head title={item ? 'Edit item' : 'Create item'} />
+            <Head title={item ? t('Edit item') : t('Create item')} />
             <PageContainer>
                 <PageHeading
-                    title={item ? `Edit ${item.name}` : 'Create item'}
-                    description="Give your content a home, an image, and an optional destination."
+                    title={
+                        item
+                            ? t('Edit {name}', { name: item.name })
+                            : t('Create item')
+                    }
+                    description={t(
+                        'Give your content a home, an image, and an optional destination.',
+                    )}
                 />
                 {categories.length === 0 ? (
                     <Card className="min-w-0 shadow-none">
                         <CardContent>
                             <EmptyState
                                 icon={Package}
-                                title="Create a category first"
-                                description="Every item needs a category. Add a category before creating an item."
+                                title={t('Create a category first')}
+                                description={t(
+                                    'Every item needs a category. Add a category before creating an item.',
+                                )}
                                 actions={
                                     canCreateCategory ? (
                                         <Button asChild>
                                             <Link href={createCategory()}>
-                                                Create category
+                                                {t('Create category')}
                                             </Link>
                                         </Button>
                                     ) : (
                                         <p className="text-sm text-muted-foreground">
-                                            Ask a category manager to create
-                                            one.
+                                            {t(
+                                                'Ask a category manager to create one.',
+                                            )}
                                         </p>
                                     )
                                 }
@@ -134,7 +145,7 @@ export default function ItemForm({
                                     <div className="space-y-6">
                                         <div className="space-y-2">
                                             <Label htmlFor="item-name">
-                                                Item name
+                                                {t('Item name')}
                                             </Label>
                                             <Input
                                                 id="item-name"
@@ -161,7 +172,7 @@ export default function ItemForm({
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="item-category">
-                                                Category
+                                                {t('Category')}
                                             </Label>
                                             <select
                                                 id="item-category"
@@ -181,7 +192,7 @@ export default function ItemForm({
                                                 className="block h-10 w-full rounded-md border bg-background px-3 text-sm"
                                             >
                                                 <option value="" disabled>
-                                                    Select a category
+                                                    {t('Select a category')}
                                                 </option>
                                                 {categories.map((category) => (
                                                     <option
@@ -201,9 +212,9 @@ export default function ItemForm({
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="item-link">
-                                                Link{' '}
+                                                {t('Link')}{' '}
                                                 <span className="font-normal text-muted-foreground">
-                                                    (optional)
+                                                    {t('(optional)')}
                                                 </span>
                                             </Label>
                                             <Input
@@ -228,7 +239,9 @@ export default function ItemForm({
                                                 id="item-link-help"
                                                 className="text-xs text-muted-foreground"
                                             >
-                                                HTTP and HTTPS links only.
+                                                {t(
+                                                    'HTTP and HTTPS links only.',
+                                                )}
                                             </p>
                                             <InputError
                                                 id="item-link-error"
@@ -237,26 +250,29 @@ export default function ItemForm({
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="item-slug">
-                                                Slug
+                                                {t('Slug')}
                                             </Label>
                                             <Input
                                                 id="item-slug"
                                                 readOnly
                                                 value={item?.slug ?? ''}
-                                                placeholder="Generated when you save"
+                                                placeholder={t(
+                                                    'Generated when you save',
+                                                )}
                                                 className="bg-muted/50 font-mono"
                                             />
                                             <p className="text-xs leading-5 text-muted-foreground">
-                                                Generated on creation and kept
-                                                when you rename the item.
+                                                {t(
+                                                    'Generated on creation and kept when you rename the item.',
+                                                )}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="space-y-4 rounded-xl border bg-muted/20 p-5">
                                         <Label htmlFor="item-image">
-                                            Image{' '}
+                                            {t('Image')}{' '}
                                             <span className="font-normal text-muted-foreground">
-                                                (optional)
+                                                {t('(optional)')}
                                             </span>
                                         </Label>
                                         <button
@@ -295,7 +311,9 @@ export default function ItemForm({
                                                     event.dataTransfer.files,
                                                 );
                                             }}
-                                            aria-label="Upload item image: drop a file or browse"
+                                            aria-label={t(
+                                                'Upload item image: drop a file or browse',
+                                            )}
                                             aria-describedby="item-image-help item-image-error"
                                             className={`block w-full space-y-3 rounded-lg border-2 border-dashed p-4 text-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50 ${isDragging ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50 hover:bg-muted/50'}`}
                                         >
@@ -314,10 +332,14 @@ export default function ItemForm({
                                                     />
                                                     <span className="ml-3 text-sm">
                                                         {form.data.remove_image
-                                                            ? 'Image will be removed'
+                                                            ? t(
+                                                                  'Image will be removed',
+                                                              )
                                                             : (form.data.image
                                                                   ?.name ??
-                                                              'No image selected')}
+                                                              t(
+                                                                  'No image selected',
+                                                              ))}
                                                     </span>
                                                 </div>
                                             )}
@@ -327,8 +349,10 @@ export default function ItemForm({
                                                     aria-hidden="true"
                                                 />
                                                 {isDragging
-                                                    ? 'Drop image here'
-                                                    : 'Drag and drop an image, or click to browse'}
+                                                    ? t('Drop image here')
+                                                    : t(
+                                                          'Drag and drop an image, or click to browse',
+                                                      )}
                                             </span>
                                         </button>
                                         <Input
@@ -349,9 +373,9 @@ export default function ItemForm({
                                             id="item-image-help"
                                             className="text-xs leading-5 text-muted-foreground"
                                         >
-                                            JPEG, PNG, or WebP. Up to 5 MB and
-                                            4096 × 4096 pixels. Leave empty to
-                                            keep the current image.
+                                            {t(
+                                                'JPEG, PNG, or WebP. Up to 5 MB and 4096 \u00d7 4096 pixels. Leave empty to keep the current image.',
+                                            )}
                                         </p>
                                         <InputError
                                             id="item-image-error"
@@ -380,7 +404,7 @@ export default function ItemForm({
                                                                 '';
                                                     }}
                                                 >
-                                                    Clear selection
+                                                    {t('Clear selection')}
                                                 </Button>
                                             </div>
                                         )}
@@ -413,7 +437,7 @@ export default function ItemForm({
                                                     }}
                                                 />
                                                 <Label htmlFor="remove-image">
-                                                    Remove current image
+                                                    {t('Remove current image')}
                                                 </Label>
                                             </div>
                                         )}
@@ -428,7 +452,7 @@ export default function ItemForm({
                                         className="space-y-2 text-sm text-muted-foreground"
                                     >
                                         <p>
-                                            Uploading:{' '}
+                                            {t('Uploading:')}{' '}
                                             {form.progress.percentage ?? 0}%
                                         </p>
                                         <progress
@@ -437,17 +461,19 @@ export default function ItemForm({
                                                 form.progress.percentage ?? 0
                                             }
                                             max={100}
-                                            aria-label="Image upload progress"
+                                            aria-label={t(
+                                                'Image upload progress',
+                                            )}
                                         />
                                     </div>
                                 )}
                                 <div className="flex flex-wrap items-center gap-3 border-t pt-5">
                                     <Button disabled={form.processing}>
                                         {form.processing
-                                            ? 'Saving...'
+                                            ? t('Saving...')
                                             : item
-                                              ? 'Save changes'
-                                              : 'Create item'}
+                                              ? t('Save changes')
+                                              : t('Create item')}
                                     </Button>
                                     <Button variant="outline" asChild>
                                         <Link
@@ -457,7 +483,7 @@ export default function ItemForm({
                                                     : profileEdit()
                                             }
                                         >
-                                            Cancel
+                                            {t('Cancel')}
                                         </Link>
                                     </Button>
                                     {form.recentlySuccessful && (
@@ -465,7 +491,7 @@ export default function ItemForm({
                                             role="status"
                                             className="text-sm text-muted-foreground"
                                         >
-                                            Item saved.
+                                            {t('Item saved.')}
                                         </p>
                                     )}
                                 </div>

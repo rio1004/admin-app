@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/use-language';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { Package, Plus } from 'lucide-react';
 import { useState } from 'react';
@@ -39,6 +40,7 @@ export default function ItemsIndex({
     filters,
     canCreate,
 }: Props) {
+    const t = useTranslation();
     const search = useForm({
         search: filters.search ?? '',
         category_id: filters.category_id ? String(filters.category_id) : '',
@@ -49,17 +51,19 @@ export default function ItemsIndex({
     const filtered = !!filters.search || !!filters.category_id;
     return (
         <>
-            <Head title="Items" />
+            <Head title={t('Items')} />
             <PageContainer>
                 <PageHeading
-                    title="Items"
-                    description="Your collection, thoughtfully organized. Find and manage your content in one place."
+                    title={t('Items')}
+                    description={t(
+                        'Your collection, thoughtfully organized. Find and manage your content in one place.',
+                    )}
                     actions={
                         canCreate && (
                             <Button asChild>
                                 <Link href={create()}>
                                     <Plus aria-hidden="true" />
-                                    Create item
+                                    {t('Create item')}
                                 </Link>
                             </Button>
                         )
@@ -80,7 +84,7 @@ export default function ItemsIndex({
                         >
                             <div className="min-w-40 flex-1">
                                 <Label htmlFor="item-search">
-                                    Search items
+                                    {t('Search items')}
                                 </Label>
                                 <Input
                                     id="item-search"
@@ -92,13 +96,13 @@ export default function ItemsIndex({
                                         )
                                     }
                                     className="mt-2"
-                                    placeholder="Search name or slug"
+                                    placeholder={t('Search name or slug')}
                                 />
                                 <InputError message={search.errors.search} />
                             </div>
                             <div className="max-w-full min-w-36">
                                 <Label htmlFor="item-category-filter">
-                                    Category
+                                    {t('Category')}
                                 </Label>
                                 <select
                                     id="item-category-filter"
@@ -111,7 +115,9 @@ export default function ItemsIndex({
                                         )
                                     }
                                 >
-                                    <option value="">All categories</option>
+                                    <option value="">
+                                        {t('All categories')}
+                                    </option>
                                     {categories.map((category) => (
                                         <option
                                             key={category.id}
@@ -126,7 +132,9 @@ export default function ItemsIndex({
                                 />
                             </div>
                             <div>
-                                <Label htmlFor="item-sort">Sort by</Label>
+                                <Label htmlFor="item-sort">
+                                    {t('Sort by')}
+                                </Label>
                                 <select
                                     id="item-sort"
                                     className="mt-2 block h-9 rounded-md border bg-background px-3 text-sm"
@@ -139,15 +147,17 @@ export default function ItemsIndex({
                                     }
                                 >
                                     <option value="created_at">
-                                        Created date
+                                        {t('Created date')}
                                     </option>
-                                    <option value="name">Name</option>
-                                    <option value="slug">Slug</option>
+                                    <option value="name">{t('Name')}</option>
+                                    <option value="slug">{t('Slug')}</option>
                                 </select>
                                 <InputError message={search.errors.sort} />
                             </div>
                             <div>
-                                <Label htmlFor="item-direction">Order</Label>
+                                <Label htmlFor="item-direction">
+                                    {t('Order')}
+                                </Label>
                                 <select
                                     id="item-direction"
                                     className="mt-2 block h-9 rounded-md border bg-background px-3 text-sm"
@@ -159,8 +169,12 @@ export default function ItemsIndex({
                                         )
                                     }
                                 >
-                                    <option value="desc">Descending</option>
-                                    <option value="asc">Ascending</option>
+                                    <option value="desc">
+                                        {t('Descending')}
+                                    </option>
+                                    <option value="asc">
+                                        {t('Ascending')}
+                                    </option>
                                 </select>
                                 <InputError message={search.errors.direction} />
                             </div>
@@ -169,7 +183,9 @@ export default function ItemsIndex({
                                 variant="outline"
                                 disabled={search.processing}
                             >
-                                {search.processing ? 'Searching...' : 'Apply'}
+                                {search.processing
+                                    ? t('Searching...')
+                                    : t('Apply')}
                             </Button>
                             <Button
                                 type="button"
@@ -177,7 +193,7 @@ export default function ItemsIndex({
                                 disabled={search.processing}
                                 onClick={() => router.get(index.url())}
                             >
-                                Reset
+                                {t('Reset')}
                             </Button>
                         </form>
                         {items.data.length === 0 ? (
@@ -185,13 +201,17 @@ export default function ItemsIndex({
                                 icon={Package}
                                 title={
                                     filtered
-                                        ? 'No matching items'
-                                        : 'Your collection starts here'
+                                        ? t('No matching items')
+                                        : t('Your collection starts here')
                                 }
                                 description={
                                     filtered
-                                        ? 'Try another search or category, or reset your filters.'
-                                        : 'Add your first item with a category, an optional image, and a link.'
+                                        ? t(
+                                              'Try another search or category, or reset your filters.',
+                                          )
+                                        : t(
+                                              'Add your first item with a category, an optional image, and a link.',
+                                          )
                                 }
                                 actions={
                                     canCreate &&
@@ -199,7 +219,7 @@ export default function ItemsIndex({
                                         <Button asChild>
                                             <Link href={create()}>
                                                 <Plus aria-hidden="true" />
-                                                Create item
+                                                {t('Create item')}
                                             </Link>
                                         </Button>
                                     )
@@ -209,7 +229,9 @@ export default function ItemsIndex({
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-sm">
                                     <caption className="sr-only">
-                                        Items, categories and available actions
+                                        {t(
+                                            'Items, categories and available actions',
+                                        )}
                                     </caption>
                                     <thead className="border-b text-muted-foreground">
                                         <tr>
@@ -217,25 +239,25 @@ export default function ItemsIndex({
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Item
+                                                {t('Item')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Category
+                                                {t('Category')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 font-medium"
                                             >
-                                                Slug
+                                                {t('Slug')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="p-3 text-right font-medium"
                                             >
-                                                Actions
+                                                {t('Actions')}
                                             </th>
                                         </tr>
                                     </thead>
@@ -291,9 +313,14 @@ export default function ItemsIndex({
                                                                 href={show(
                                                                     item.id,
                                                                 )}
-                                                                aria-label={`View ${item.name}`}
+                                                                aria-label={t(
+                                                                    'View {name}',
+                                                                    {
+                                                                        name: item.name,
+                                                                    },
+                                                                )}
                                                             >
-                                                                View
+                                                                {t('View')}
                                                             </Link>
                                                         </Button>
                                                         {item.can.update && (
@@ -306,9 +333,14 @@ export default function ItemsIndex({
                                                                     href={edit(
                                                                         item.id,
                                                                     )}
-                                                                    aria-label={`Edit ${item.name}`}
+                                                                    aria-label={t(
+                                                                        'Edit {name}',
+                                                                        {
+                                                                            name: item.name,
+                                                                        },
+                                                                    )}
                                                                 >
-                                                                    Edit
+                                                                    {t('Edit')}
                                                                 </Link>
                                                             </Button>
                                                         )}
@@ -321,9 +353,14 @@ export default function ItemsIndex({
                                                                         item,
                                                                     )
                                                                 }
-                                                                aria-label={`Delete ${item.name}`}
+                                                                aria-label={t(
+                                                                    'Delete {name}',
+                                                                    {
+                                                                        name: item.name,
+                                                                    },
+                                                                )}
                                                             >
-                                                                Delete
+                                                                {t('Delete')}
                                                             </Button>
                                                         )}
                                                     </div>
@@ -335,12 +372,12 @@ export default function ItemsIndex({
                             </div>
                         )}
                         <nav
-                            aria-label="Item pagination"
+                            aria-label={t('Item pagination')}
                             className="flex flex-wrap items-center justify-between gap-3 border-t pt-4"
                         >
                             <p className="text-sm text-muted-foreground">
-                                Page {items.current_page} of {items.last_page} ·{' '}
-                                {items.total} items
+                                {t('Page')} {items.current_page} {t('of')}{' '}
+                                {items.last_page} · {items.total} {t('items')}
                             </p>
                             <div className="flex gap-2">
                                 {items.prev_page_url ? (
@@ -349,7 +386,7 @@ export default function ItemsIndex({
                                             href={items.prev_page_url}
                                             preserveScroll
                                         >
-                                            Previous
+                                            {t('Previous')}
                                         </Link>
                                     </Button>
                                 ) : (
@@ -358,7 +395,7 @@ export default function ItemsIndex({
                                         size="sm"
                                         disabled
                                     >
-                                        Previous
+                                        {t('Previous')}
                                     </Button>
                                 )}
                                 {items.next_page_url ? (
@@ -367,7 +404,7 @@ export default function ItemsIndex({
                                             href={items.next_page_url}
                                             preserveScroll
                                         >
-                                            Next
+                                            {t('Next')}
                                         </Link>
                                     </Button>
                                 ) : (
@@ -376,7 +413,7 @@ export default function ItemsIndex({
                                         size="sm"
                                         disabled
                                     >
-                                        Next
+                                        {t('Next')}
                                     </Button>
                                 )}
                             </div>
