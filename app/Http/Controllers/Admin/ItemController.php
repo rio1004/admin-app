@@ -104,14 +104,19 @@ class ItemController extends Controller
 
     private function destination(Request $request, Item $item): RedirectResponse
     {
-        if ($request->user()->can('view', $item)) {
-            return to_route('admin.items.show', $item);
-        }
-        if ($request->user()->can('update', $item)) {
-            return to_route('admin.items.edit', $item);
+        $query = validator($request->query(), [
+            'page' => ['sometimes', 'integer', 'min:1'],
+            'sort' => ['sometimes', 'in:name,slug,created_at'],
+            'direction' => ['sometimes', 'in:asc,desc'],
+            'search' => ['nullable', 'string', 'max:120'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
+        ])->validate();
+
+        if ($request->user()->can('viewAny', Item::class)) {
+            return to_route('admin.items.index', $query);
         }
 
-        return to_route('admin.items.create');
+        return to_route('admin.items.index');
     }
 
     public function destroy(Request $request, Item $item, ManageItems $items): RedirectResponse

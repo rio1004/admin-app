@@ -376,9 +376,7 @@ export default function ItemsIndex({
                                                                 asChild
                                                             >
                                                                 <Link
-                                                                    href={edit(
-                                                                        item.id,
-                                                                    )}
+                                                                    href={`${edit.url(item.id)}${window.location.search}`}
                                                                     aria-label={t(
                                                                         "Edit {name}",
                                                                         {

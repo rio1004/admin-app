@@ -125,7 +125,7 @@ export default function ItemForm({
                                     event.preventDefault();
                                     form.post(
                                         item
-                                            ? update.url(item.id)
+                                            ?  `${update.url(item.id)}${window.location.search}`
                                             : store.url(),
                                         {
                                             forceFormData: true,
