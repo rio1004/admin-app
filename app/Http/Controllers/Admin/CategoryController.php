@@ -73,7 +73,7 @@ class CategoryController extends Controller
         $categories->update($category, $request->validated('name'));
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Category updated.']);
 
-        return to_route('admin.categories.edit', $category);
+        return to_route('admin.categories.index', $category);
     }
 
     public function destroy(Request $request, Category $category, ManageCategories $categories): RedirectResponse
